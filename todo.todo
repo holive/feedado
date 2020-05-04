@@ -1,0 +1,7 @@
+worker feed converter tem uma api q recebe post com o schema e salva no banco;
+a rotina do feed converter lê esses novos schemas e gera o feed para cada source;
+
+o client bate na api pra pegar o feed do usuário. A api vai pegar no banco os schemas
+    desse usuário e vai montar uma resposta completa, segmentada por categoria.
+
+    

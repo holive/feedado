@@ -1,0 +1,19 @@
+{
+    "source": "https://economia.estadao.com.br/",
+    "sections": [
+        {
+            "parent-block-class": ".row.management",
+            "each-block-class": "secttion",
+            "title": ".text-wrapper h3",
+            "subtitle": ".text-wrapper p",
+            "url": ".text-wrapper"
+        },
+        {
+            "parent-block-class": "#ultimas .lista",
+            "each-block-class": "secttion",
+            "title": ".third",
+            "subtitle": "p",
+            "url": ".link-title"
+        }
+    ]
+}
