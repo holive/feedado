@@ -1,0 +1,10 @@
+{
+  "dependencies": [
+    {
+      "name": "",
+      "status": "FAIL"
+    }
+  ],
+  "message": "The application is partially functional.",
+  "status": "PARTIAL"
+}

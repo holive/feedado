@@ -24,5 +24,10 @@ func New() (*Feed, error) {
 		return nil, errors.Wrap(err, "could not load config")
 	}
 
+	httpClient, err := initHTTPClient(t.Cfg)
+	if err != nil {
+		return nil, errors.Wrap(err, "could not initialize http client")
+	}
+
 	return t, nil
 }

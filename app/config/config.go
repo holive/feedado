@@ -32,17 +32,6 @@ type Config struct {
 	HTTPClient *HTTPClient
 }
 
-func loadConfig(profile string) error {
-	viper.AddConfigPath(".config")
-	viper.SetConfigName(profile)
-
-	if err := viper.MergeInConfig(); err != nil {
-		return errors.Wrap(err, "can't read the config file")
-	}
-
-	return nil
-}
-
 func New() (*Config, error) {
 	profile := os.Getenv("APP_PROFILE")
 
@@ -50,8 +39,11 @@ func New() (*Config, error) {
 		profile = "development"
 	}
 
-	if err := loadConfig(profile); err != nil {
-		return nil, errors.Wrap(err, "couldn't initialize app config")
+	viper.AddConfigPath("./config")
+	viper.SetConfigName(profile)
+
+	if err := viper.MergeInConfig(); err != nil {
+		return nil, errors.Wrap(err, "can't read the config file")
 	}
 
 	var c Config

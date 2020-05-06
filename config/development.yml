@@ -7,21 +7,6 @@ HTTPServer:
   WriteTimeout: 7s
   Router:
     MiddlewareTimeout: 6s
-Postgres:
-  Host: 'localhost'
-  Port: '5432'
-  User: 'postgres'
-  Password: 'postgres'
-  Schema: 'tatui'
-Feed:
-  Name: tatui-test
-  Service: sns
-  Region: us-east-1
 HTTPClient:
   Timeout: 4s
-  UserAgent: 'tatui'
-Algolia:
-  AppID:  testing84XGRQ4I0V
-  ApiKey: b434874f66b4ba5c0778085d3b450978
-  IndexLojas: dev_lojas      
-  IndexLocalOffers: dev_local_offers
+  UserAgent: 'feed'
