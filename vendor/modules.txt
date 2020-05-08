@@ -4,6 +4,10 @@ github.com/fsnotify/fsnotify
 github.com/go-kit/kit/log
 # github.com/go-logfmt/logfmt v0.4.0
 github.com/go-logfmt/logfmt
+# github.com/go-stack/stack v1.8.0
+github.com/go-stack/stack
+# github.com/golang/snappy v0.0.1
+github.com/golang/snappy
 # github.com/hashicorp/hcl v1.0.0
 github.com/hashicorp/hcl
 github.com/hashicorp/hcl/hcl/ast
@@ -18,6 +22,12 @@ github.com/hashicorp/hcl/json/token
 # github.com/holive/gopkg v0.0.0-20200507025338-8ab3c86c2041
 github.com/holive/gopkg/metric
 github.com/holive/gopkg/net/http
+# github.com/klauspost/compress v1.9.5
+github.com/klauspost/compress/fse
+github.com/klauspost/compress/huff0
+github.com/klauspost/compress/snappy
+github.com/klauspost/compress/zstd
+github.com/klauspost/compress/zstd/internal/xxhash
 # github.com/kr/logfmt v0.0.0-20140226030751-b84e30acd515
 github.com/kr/logfmt
 # github.com/magiconair/properties v1.8.1
@@ -32,7 +42,7 @@ github.com/newrelic/go-agent/internal/jsonx
 github.com/newrelic/go-agent/internal/logger
 github.com/newrelic/go-agent/internal/sysinfo
 github.com/newrelic/go-agent/internal/utilization
-# github.com/pelletier/go-toml v1.2.0
+# github.com/pelletier/go-toml v1.4.0
 github.com/pelletier/go-toml
 # github.com/pkg/errors v0.9.1
 github.com/pkg/errors
@@ -51,6 +61,57 @@ github.com/spf13/viper
 github.com/subosito/gotenv
 # github.com/viki-org/dnscache v0.0.0-20130720023526-c70c1f23c5d8
 github.com/viki-org/dnscache
+# github.com/xdg/scram v0.0.0-20180814205039-7eeb5667e42c
+github.com/xdg/scram
+# github.com/xdg/stringprep v0.0.0-20180714160509-73f8eece6fdc
+github.com/xdg/stringprep
+# go.mongodb.org/mongo-driver v1.3.3
+go.mongodb.org/mongo-driver/bson
+go.mongodb.org/mongo-driver/bson/bsoncodec
+go.mongodb.org/mongo-driver/bson/bsonoptions
+go.mongodb.org/mongo-driver/bson/bsonrw
+go.mongodb.org/mongo-driver/bson/bsontype
+go.mongodb.org/mongo-driver/bson/primitive
+go.mongodb.org/mongo-driver/event
+go.mongodb.org/mongo-driver/internal
+go.mongodb.org/mongo-driver/mongo
+go.mongodb.org/mongo-driver/mongo/options
+go.mongodb.org/mongo-driver/mongo/readconcern
+go.mongodb.org/mongo-driver/mongo/readpref
+go.mongodb.org/mongo-driver/mongo/writeconcern
+go.mongodb.org/mongo-driver/tag
+go.mongodb.org/mongo-driver/version
+go.mongodb.org/mongo-driver/x/bsonx
+go.mongodb.org/mongo-driver/x/bsonx/bsoncore
+go.mongodb.org/mongo-driver/x/mongo/driver
+go.mongodb.org/mongo-driver/x/mongo/driver/address
+go.mongodb.org/mongo-driver/x/mongo/driver/auth
+go.mongodb.org/mongo-driver/x/mongo/driver/auth/internal/gssapi
+go.mongodb.org/mongo-driver/x/mongo/driver/connstring
+go.mongodb.org/mongo-driver/x/mongo/driver/description
+go.mongodb.org/mongo-driver/x/mongo/driver/dns
+go.mongodb.org/mongo-driver/x/mongo/driver/mongocrypt
+go.mongodb.org/mongo-driver/x/mongo/driver/mongocrypt/options
+go.mongodb.org/mongo-driver/x/mongo/driver/operation
+go.mongodb.org/mongo-driver/x/mongo/driver/session
+go.mongodb.org/mongo-driver/x/mongo/driver/topology
+go.mongodb.org/mongo-driver/x/mongo/driver/uuid
+go.mongodb.org/mongo-driver/x/mongo/driver/wiremessage
+# go.uber.org/atomic v1.6.0
+go.uber.org/atomic
+# go.uber.org/multierr v1.5.0
+go.uber.org/multierr
+# go.uber.org/zap v1.15.0
+go.uber.org/zap
+go.uber.org/zap/buffer
+go.uber.org/zap/internal/bufferpool
+go.uber.org/zap/internal/color
+go.uber.org/zap/internal/exit
+go.uber.org/zap/zapcore
+# golang.org/x/crypto v0.0.0-20190605123033-f99c8df09eb5
+golang.org/x/crypto/pbkdf2
+# golang.org/x/sync v0.0.0-20190423024810-112230192c58
+golang.org/x/sync/semaphore
 # golang.org/x/sys v0.0.0-20190620070143-6f217b454f45
 golang.org/x/sys/unix
 # golang.org/x/text v0.3.2

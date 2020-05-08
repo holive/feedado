@@ -10,3 +10,7 @@ HTTPServer:
 HTTPClient:
   Timeout: 4s
   UserAgent: 'feed'
+Mongo:
+  URI: mongodb://localhost:27017
+  User: mongo
+  Password: mongo
