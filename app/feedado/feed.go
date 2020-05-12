@@ -1,24 +1,26 @@
-package feed
+package feedado
 
 import (
-	"github.com/holive/feed/app/config"
+	"github.com/holive/feedado/app/config"
+	"github.com/holive/feedado/app/feed"
 	infraHTTP "github.com/holive/gopkg/net/http"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 )
 
-type Feed struct {
+type Feedado struct {
 	Cfg      *config.Config
 	Services *Services
 }
 
-type Services interface {
+type Services struct {
+	Feed *feed.Service
 }
 
-func New() (*Feed, error) {
+func New() (*Feedado, error) {
 	var (
 		err error
-		f   = &Feed{}
+		f   = &Feedado{}
 	)
 
 	f.Cfg, err = loadConfig()
@@ -50,6 +52,7 @@ func New() (*Feed, error) {
 }
 
 func initServices(cfg *config.Config, client infraHTTP.Runner, logger *zap.SugaredLogger) (*Services, error) {
+	// iniciar o db para passá-lo como repository para o feed
 
 	return nil, nil
 }

@@ -4,14 +4,14 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/holive/feed/app/feed"
+	"github.com/holive/feedado/app/feedado"
 	"github.com/pkg/errors"
 )
 
 func main() {
-	app, err := feed.New()
+	app, err := feedado.New()
 	if err != nil {
-		fmt.Println(errors.Wrap(err, "could not run Feed").Error())
+		fmt.Println(errors.Wrap(err, "could not run Feedado").Error())
 		os.Exit(1)
 	}
 

@@ -1,10 +1,10 @@
-package feed
+package feedado
 
 import (
 	"net/http"
 	"time"
 
-	"github.com/holive/feed/app/config"
+	"github.com/holive/feedado/app/config"
 	infraHTTP "github.com/holive/gopkg/net/http"
 	"github.com/pkg/errors"
 )

@@ -1,6 +1,6 @@
-package feed
+package feedado
 
-import "github.com/holive/feed/app/config"
+import "github.com/holive/feedado/app/config"
 
 func loadConfig() (*config.Config, error) {
 	return config.New()

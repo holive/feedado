@@ -1,4 +1,4 @@
-package feed
+package feedado
 
 import "go.uber.org/zap"
 

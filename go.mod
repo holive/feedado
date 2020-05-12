@@ -1,4 +1,4 @@
-module github.com/holive/feed
+module github.com/holive/feedado
 
 go 1.13
 
