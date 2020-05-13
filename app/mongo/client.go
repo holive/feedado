@@ -1,6 +1,9 @@
 package mongo
 
 import (
+	"context"
+	"time"
+
 	"github.com/pkg/errors"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -11,10 +14,9 @@ type Client struct {
 }
 
 type ClientConfig struct {
-	URI      string
-	User     string
-	Password string
-	AppName  string
+	URI     string
+	AppName string
+	Timeout time.Duration
 	// write timeout ?
 	// poolSize ?
 	// autoReconnect ?
@@ -26,7 +28,8 @@ type ClientConfig struct {
 }
 
 func New(cfg *ClientConfig) (*Client, error) {
-	client, err := mongo.NewClient(options.Client().ApplyURI(cfg.URI))
+	ctx, _ := context.WithTimeout(context.Background(), cfg.Timeout*time.Second)
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI(cfg.URI))
 	if err != nil {
 		return nil, errors.Wrap(err, "could not connect to database")
 	}

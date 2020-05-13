@@ -3,6 +3,7 @@ package feedado
 import (
 	"github.com/holive/feedado/app/config"
 	"github.com/holive/feedado/app/feed"
+	"github.com/holive/feedado/app/mongo"
 	infraHTTP "github.com/holive/gopkg/net/http"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
@@ -51,8 +52,8 @@ func New() (*Feedado, error) {
 	return f, nil
 }
 
-func initServices(cfg *config.Config, client infraHTTP.Runner, logger *zap.SugaredLogger) (*Services, error) {
+func initServices(cfg *config.Config, db *mongo.Client, client infraHTTP.Runner, logger *zap.SugaredLogger) (*Services, error) {
 	// iniciar o db para passá-lo como repository para o feed
 
-	return nil, nil
+	return &Services{Feed: &feed.Service{}}, nil
 }

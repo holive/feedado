@@ -18,6 +18,12 @@ type HTTPServer struct {
 	Router            *Router
 }
 
+type DB struct {
+	URI     string
+	AppName string
+	Timeout time.Duration
+}
+
 type Router struct {
 	MiddlewareTimeout time.Duration
 }
@@ -30,6 +36,7 @@ type HTTPClient struct {
 type Config struct {
 	HTTPServer *HTTPServer
 	HTTPClient *HTTPClient
+	Mongo      *DB
 }
 
 func New() (*Config, error) {
