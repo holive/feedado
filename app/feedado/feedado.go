@@ -53,7 +53,9 @@ func New() (*Feedado, error) {
 }
 
 func initServices(cfg *config.Config, db *mongo.Client, client infraHTTP.Runner, logger *zap.SugaredLogger) (*Services, error) {
-	// iniciar o db para passá-lo como repository para o feed
+	feedService := initFeedService(db, logger, client)
 
-	return &Services{Feed: &feed.Service{}}, nil
+	return &Services{
+		Feed: feedService,
+	}, nil
 }

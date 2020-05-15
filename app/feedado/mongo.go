@@ -12,3 +12,7 @@ func initMongoClient(cfg *config.Config) (*mongo.Client, error) {
 		Timeout: cfg.Mongo.Timeout,
 	})
 }
+
+func initMongoFeedRepository(client *mongo.Client) *mongo.FeedRepository {
+	return mongo.NewFeedRepository(client)
+}

@@ -9,8 +9,8 @@ HTTPServer:
     MiddlewareTimeout: 6s
 HTTPClient:
   Timeout: 4s
-  UserAgent: 'feed'
+  UserAgent: 'feedado'
 Mongo:
   URI: mongodb://localhost:27017
   AppName: feedado
-  Timeout: 2
+  Timeout: 5

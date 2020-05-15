@@ -4,6 +4,8 @@ import (
 	"context"
 	"time"
 
+	"go.mongodb.org/mongo-driver/mongo/readpref"
+
 	"github.com/pkg/errors"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -17,19 +19,12 @@ type ClientConfig struct {
 	URI     string
 	AppName string
 	Timeout time.Duration
-	// write timeout ?
-	// poolSize ?
-	// autoReconnect ?
-	// noDelay ?
-	// keepAlive ?
-	// connectTimeoutMS ?
-	// loggerLevel ?
-	// logger ?
 }
 
 func New(cfg *ClientConfig) (*Client, error) {
 	ctx, _ := context.WithTimeout(context.Background(), cfg.Timeout*time.Second)
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI(cfg.URI))
+	client, _ := mongo.Connect(ctx, options.Client().ApplyURI(cfg.URI))
+	err := client.Ping(ctx, readpref.Primary())
 	if err != nil {
 		return nil, errors.Wrap(err, "could not connect to database")
 	}
