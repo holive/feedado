@@ -5,6 +5,7 @@ type FeedRepository struct {
 }
 
 func NewFeedRepository(conn *Client) *FeedRepository {
+
 	return &FeedRepository{
 		conn: conn,
 	}

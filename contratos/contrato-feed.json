@@ -1,5 +1,6 @@
 {
     "source": "https://economia.estadao.com.br/",
+    "description": "Notícias de Economia e Negócios | Estadão",
     "sections": [
         {
             "parent-block-class": ".row.management",

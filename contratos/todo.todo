@@ -5,3 +5,20 @@ A princípio a rotina pode rodar a cada 60 minutos.
 
 o client bate na api pra pegar o feed do usuário. A api vai pegar no banco os schemas
     desse usuário e vai montar uma resposta completa, segmentada por categoria.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------------------------------------------
+
+- dependencies health check

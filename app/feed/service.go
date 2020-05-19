@@ -1,7 +1,6 @@
 package feed
 
 import (
-	"github.com/holive/feedado/app/mongo"
 	infraHTTP "github.com/holive/gopkg/net/http"
 	"go.uber.org/zap"
 )
@@ -12,7 +11,7 @@ type Service struct {
 	logger     *zap.SugaredLogger
 }
 
-func NewService(repository *mongo.FeedRepository, client infraHTTP.Runner, logger *zap.SugaredLogger) *Service {
+func NewService(repository Repository, client infraHTTP.Runner, logger *zap.SugaredLogger) *Service {
 	return &Service{
 		repo:       repository,
 		httpRunner: client,
