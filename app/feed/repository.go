@@ -1,9 +1,11 @@
 package feed
 
+import "context"
+
 type Repository interface {
-	Create(feed *Feed) (*Feed, error)
-	Update(feed *Feed) (*Feed, error)
-	DeleteBySource(source string) error
-	FindBySource(source string) (*Feed, error)
-	FindAll(limit string, offset string) (SearchResult, error)
+	Create(ctx context.Context, feed *Feed) (*Feed, error)
+	Update(ctx context.Context, feed *Feed) (*Feed, error)
+	DeleteBySource(ctx context.Context, source string) error
+	FindBySource(ctx context.Context, source string) (*Feed, error)
+	FindAll(ctx context.Context, limit string, offset string) (SearchResult, error)
 }

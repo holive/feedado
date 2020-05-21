@@ -26,5 +26,10 @@ func NewRouter(cfg *RouterConfig, handler *handler.Handler) http.Handler {
 	// Health Check
 	r.Get("/health", handler.Health)
 
+	// Feed Routes
+	r.Route("/feed", func(r chi.Router) {
+		r.Post("/", handler.CreateFeed)
+	})
+
 	return r
 }

@@ -3,15 +3,15 @@
     "description": "Notícias de Economia e Negócios | Estadão",
     "sections": [
         {
-            "parent-block-class": ".row.management",
-            "each-block-class": "secttion",
+            "parent_block_class": ".row.management",
+            "each_block_class": "secttion",
             "title": ".text-wrapper h3",
             "subtitle": ".text-wrapper p",
             "url": ".text-wrapper"
         },
         {
-            "parent-block-class": "#ultimas .lista",
-            "each-block-class": "secttion",
+            "parent_block_class": "#ultimas .lista",
+            "each_block_class": "secttion",
             "title": ".third",
             "subtitle": "p",
             "url": ".link-title"

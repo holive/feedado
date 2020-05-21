@@ -12,5 +12,5 @@ HTTPClient:
   UserAgent: 'feedado'
 Mongo:
   URI: mongodb://localhost:27017
-  AppName: feedado
+  Database: feedado
   Timeout: 5

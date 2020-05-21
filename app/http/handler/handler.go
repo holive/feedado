@@ -27,3 +27,43 @@ func (h *Handler) Health(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(res)
 }
+
+func respondWithJSONError(w http.ResponseWriter, code int, err error) {
+	payload := map[string]interface{}{
+		"error": err.Error(),
+	}
+	response, err := json.Marshal(payload)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		_, err = w.Write([]byte("{ \"error\": \"could not marshal error\"}"))
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(code)
+
+	_, err = w.Write(response)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+}
+
+func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
+	response, err := json.Marshal(payload)
+	if err != nil {
+		respondWithJSONError(w, http.StatusInternalServerError, err)
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(code)
+
+	_, err = w.Write(response)
+	if err != nil {
+		respondWithJSONError(w, http.StatusInternalServerError, err)
+	}
+}

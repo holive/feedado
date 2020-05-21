@@ -53,7 +53,7 @@ func New() (*Feedado, error) {
 }
 
 func initServices(cfg *config.Config, db *mongo.Client, client infraHTTP.Runner, logger *zap.SugaredLogger) (*Services, error) {
-	feedService := initFeedService(db, logger, client)
+	feedService := initFeedService(db, client) // TODO: do I need the logger?
 
 	return &Services{
 		Feed: feedService,

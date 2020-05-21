@@ -12,13 +12,13 @@ import (
 )
 
 type Client struct {
-	db *mongo.Client
+	db *mongo.Database
 }
 
 type ClientConfig struct {
-	URI     string
-	AppName string
-	Timeout time.Duration
+	URI      string
+	Database string
+	Timeout  time.Duration
 }
 
 func New(cfg *ClientConfig) (*Client, error) {
@@ -30,6 +30,6 @@ func New(cfg *ClientConfig) (*Client, error) {
 	}
 
 	return &Client{
-		db: client,
+		db: client.Database(cfg.Database),
 	}, nil
 }

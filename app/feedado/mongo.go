@@ -7,9 +7,9 @@ import (
 
 func initMongoClient(cfg *config.Config) (*mongo.Client, error) {
 	return mongo.New(&mongo.ClientConfig{
-		URI:     cfg.Mongo.URI,
-		AppName: cfg.Mongo.AppName,
-		Timeout: cfg.Mongo.Timeout,
+		URI:      cfg.Mongo.URI,
+		Database: cfg.Mongo.Database,
+		Timeout:  cfg.Mongo.Timeout,
 	})
 }
 

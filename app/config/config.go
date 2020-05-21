@@ -19,9 +19,9 @@ type HTTPServer struct {
 }
 
 type DB struct {
-	URI     string
-	AppName string
-	Timeout time.Duration
+	URI      string
+	Database string
+	Timeout  time.Duration
 }
 
 type Router struct {
