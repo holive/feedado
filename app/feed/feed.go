@@ -17,8 +17,8 @@ type Section struct {
 type SearchResult struct {
 	Feeds  []Feed `json:"feeds"`
 	Result struct {
-		Offset int `json:"offset"`
-		Limit  int `json:"limit"`
-		Total  int `json:"total"`
+		Offset int64 `json:"offset"`
+		Limit  int64 `json:"limit"`
+		Total  int64 `json:"total"`
 	} `json:"_result"`
 }

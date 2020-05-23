@@ -2,6 +2,7 @@ package mongo
 
 import (
 	"context"
+	"strconv"
 
 	"github.com/holive/feedado/app/feed"
 	"github.com/pkg/errors"
@@ -23,8 +24,7 @@ func (fr *FeedRepository) Create(ctx context.Context, fd *feed.Feed) (*feed.Feed
 
 	var newFeed feed.Feed
 
-	err = fr.collection.FindOne(ctx, bson.M{"_id": resp.InsertedID}).Decode(&newFeed)
-	if err != nil {
+	if err = fr.collection.FindOne(ctx, bson.M{"_id": resp.InsertedID}).Decode(&newFeed); err != nil {
 		return nil, errors.Wrap(err, "could not find the new feed")
 	}
 
@@ -84,8 +84,83 @@ func (fr *FeedRepository) FindBySource(ctx context.Context, source string) (*fee
 	return &f, nil
 }
 
-func (fr *FeedRepository) FindAll(ctx context.Context, limit string, offset string) (feed.SearchResult, error) {
-	panic("implement me")
+func (fr *FeedRepository) FindAll(ctx context.Context, limit string, offset string) (*feed.SearchResult, error) {
+	intLimit, intOffset, err := fr.getLimitOffset(limit, offset)
+	if err != nil {
+		return &feed.SearchResult{}, errors.Wrap(err, "could not get limit or offset")
+	}
+
+	findOptions := options.Find().SetLimit(intLimit).SetSkip(intOffset)
+
+	cur, err := fr.collection.Find(ctx, bson.D{{}}, findOptions)
+	if err != nil {
+		return &feed.SearchResult{}, err
+	}
+
+	total, err := fr.collection.CountDocuments(ctx, bson.D{{}})
+	if err != nil {
+		return nil, errors.Wrap(err, "could not count documents")
+	}
+
+	results, err := fr.resultFromCursor(ctx, cur)
+	if err != nil {
+		return &feed.SearchResult{}, errors.Wrap(err, "could not get results from cursor")
+	}
+
+	return &feed.SearchResult{
+		Feeds: results,
+		Result: struct {
+			Offset int64 `json:"offset"`
+			Limit  int64 `json:"limit"`
+			Total  int64 `json:"total"`
+		}{
+			Offset: intOffset,
+			Limit:  intLimit,
+			Total:  total,
+		},
+	}, nil
+}
+
+func (fr *FeedRepository) getLimitOffset(limit string, offset string) (int64, int64, error) {
+	if offset == "" {
+		offset = "0"
+	}
+
+	if limit == "" {
+		limit = "24"
+	}
+
+	intOffset, err := strconv.Atoi(offset)
+	if err != nil {
+		return 0, 0, err
+	}
+
+	intLimit, err := strconv.Atoi(limit)
+	if err != nil {
+		return 0, 0, err
+	}
+
+	return int64(intLimit), int64(intOffset), nil
+}
+
+func (fr *FeedRepository) resultFromCursor(ctx context.Context, cur *mongo.Cursor) ([]feed.Feed, error) {
+	var results []feed.Feed
+	for cur.Next(ctx) {
+		var elem feed.Feed
+		err := cur.Decode(&elem)
+		if err != nil {
+			return nil, err
+		}
+
+		results = append(results, elem)
+	}
+	if err := cur.Err(); err != nil {
+		return nil, err
+	}
+
+	cur.Close(ctx)
+
+	return results, nil
 }
 
 func NewFeedRepository(conn *Client) *FeedRepository {

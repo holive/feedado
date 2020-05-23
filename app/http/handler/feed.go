@@ -88,3 +88,16 @@ func (h *Handler) GetFeed(w http.ResponseWriter, r *http.Request) {
 
 	respondWithJSON(w, http.StatusOK, f)
 }
+
+func (h *Handler) GetAll(w http.ResponseWriter, r *http.Request) {
+	limit := r.URL.Query().Get("limit")
+	offset := r.URL.Query().Get("offset")
+
+	results, err := h.Services.Feed.FindAll(r.Context(), limit, offset)
+	if err != nil {
+		respondWithJSONError(w, http.StatusNotFound, err)
+		return
+	}
+
+	respondWithJSON(w, http.StatusOK, results)
+}

@@ -38,7 +38,7 @@ func (s *Service) FindBySource(ctx context.Context, source string) (*Feed, error
 	return s.repo.FindBySource(ctx, source)
 }
 
-func (s *Service) FindAll(ctx context.Context, limit string, offset string) (SearchResult, error) {
+func (s *Service) FindAll(ctx context.Context, limit string, offset string) (*SearchResult, error) {
 	return s.repo.FindAll(ctx, limit, offset)
 }
 
