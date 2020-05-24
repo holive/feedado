@@ -16,17 +16,13 @@ type RouterConfig struct {
 func NewRouter(cfg *RouterConfig, handler *handler.Handler) http.Handler {
 	r := chi.NewRouter()
 
-	// Middleware
 	r.Use(chiMiddleware.RequestID)
 	r.Use(chiMiddleware.RealIP)
 	r.Use(chiMiddleware.Recoverer)
-	//r.Use(middleware.ContentTypeJSON)
 	r.Use(chiMiddleware.Timeout(cfg.MiddlewareTimeout))
 
-	// Health Check
 	r.Get("/health", handler.Health)
 
-	// Feed Routes
 	r.Route("/feed", func(r chi.Router) {
 		r.Post("/", handler.CreateFeed)
 		r.Get("/", handler.GetAll)
