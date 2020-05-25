@@ -14,11 +14,14 @@ type Service struct {
 }
 
 func (s *Service) Create(ctx context.Context, feed *Feed) (*Feed, error) {
-	// validar sources duplicados
+	alreadyExists, _ := s.repo.FindBySource(ctx, feed.Source)
+	if alreadyExists != nil {
+		return &Feed{}, errors.New("source already exists")
+	}
 
 	feed, err := s.repo.Create(ctx, feed)
 	if err != nil {
-		return nil, errors.Wrap(err, "could not create a feed")
+		return &Feed{}, errors.Wrap(err, "could not create a feed")
 	}
 
 	return feed, nil
