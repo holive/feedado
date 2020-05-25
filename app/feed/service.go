@@ -27,14 +27,12 @@ func (s *Service) Create(ctx context.Context, feed *Feed) (*Feed, error) {
 	return feed, nil
 }
 
-func (s *Service) Update(ctx context.Context, feed *Feed, feedID string) error {
-	// TODO: validar alguma coisa?
-
-	return s.repo.Update(ctx, feed, feedID)
+func (s *Service) Update(ctx context.Context, feed *Feed) error {
+	return s.repo.Update(ctx, feed)
 }
 
-func (s *Service) Delete(ctx context.Context, id string) error {
-	return s.repo.Delete(ctx, id)
+func (s *Service) Delete(ctx context.Context, source string) error {
+	return s.repo.Delete(ctx, source)
 }
 
 func (s *Service) FindBySource(ctx context.Context, source string) (*Feed, error) {

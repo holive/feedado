@@ -36,8 +36,6 @@ func (h *Handler) CreateFeed(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) UpdateFeed(w http.ResponseWriter, r *http.Request) {
-	feedID := chi.URLParam(r, "id")
-
 	payload, err := ioutil.ReadAll(r.Body)
 	defer r.Body.Close()
 	if err != nil {
@@ -51,7 +49,7 @@ func (h *Handler) UpdateFeed(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.Services.Feed.Update(r.Context(), &f, feedID)
+	err = h.Services.Feed.Update(r.Context(), &f)
 	if err != nil {
 		respondWithJSONError(w, http.StatusNotFound, err)
 		return
@@ -61,9 +59,15 @@ func (h *Handler) UpdateFeed(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) DeleteFeed(w http.ResponseWriter, r *http.Request) {
-	feedID := chi.URLParam(r, "id")
+	source := chi.URLParam(r, "source")
 
-	if err := h.Services.Feed.Delete(r.Context(), feedID); err != nil {
+	url, err := url2.QueryUnescape(source)
+	if err != nil {
+		respondWithJSONError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	if err := h.Services.Feed.Delete(r.Context(), url); err != nil {
 		respondWithJSONError(w, http.StatusInternalServerError, err)
 		return
 	}

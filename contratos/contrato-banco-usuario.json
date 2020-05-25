@@ -1,17 +1,12 @@
 {
-    "id": "hugo3387@gmail.com",
-    "user_feeds": {
-        "categories": [
-            {
-                "other": []
-            },
-            {
-                "economia": [
-                    {
-                        "source": "https://economia.estadao.com.br/"
-                    }
-                ]
-            }
-        ]
+  "id": "hugo3387@gmail.com",
+  "user_feeds": [
+    {
+      "name": "Economia",
+      "sources": [
+        "https://economia.estadao.com.br/",
+        "https://economia.estadao.com.br/"
+      ]
     }
+  ]
 }

@@ -7,7 +7,6 @@ import (
 	"github.com/holive/feedado/app/feed"
 	"github.com/pkg/errors"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -31,19 +30,14 @@ func (fr *FeedRepository) Create(ctx context.Context, fd *feed.Feed) (*feed.Feed
 	return &newFeed, nil
 }
 
-func (fr *FeedRepository) Update(ctx context.Context, newFeed *feed.Feed, feedID string) error {
-	objID, err := primitive.ObjectIDFromHex(feedID)
-	if err != nil {
-		return errors.Wrap(err, "ObjectIDFromHex ERROR")
-	}
-
+func (fr *FeedRepository) Update(ctx context.Context, newFeed *feed.Feed) error {
 	update, err := bson.Marshal(newFeed)
 	if err != nil {
 		return errors.Wrap(err, "could not marshal bson")
 	}
 
 	opts := options.Replace().SetUpsert(false)
-	filter := bson.M{"_id": bson.M{"$eq": objID}}
+	filter := bson.M{"source": bson.M{"$eq": newFeed.Source}}
 
 	resp, err := fr.collection.ReplaceOne(ctx, filter, update, opts)
 	if err != nil {
@@ -57,13 +51,8 @@ func (fr *FeedRepository) Update(ctx context.Context, newFeed *feed.Feed, feedID
 	return nil
 }
 
-func (fr *FeedRepository) Delete(ctx context.Context, feedID string) error {
-	objID, err := primitive.ObjectIDFromHex(feedID)
-	if err != nil {
-		return errors.Wrap(err, "ObjectIDFromHex ERROR")
-	}
-
-	filter := bson.M{"_id": bson.M{"$eq": objID}}
+func (fr *FeedRepository) Delete(ctx context.Context, source string) error {
+	filter := bson.M{"source": bson.M{"$eq": source}}
 
 	if _, err := fr.collection.DeleteOne(ctx, filter); err != nil {
 		return err

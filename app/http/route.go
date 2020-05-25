@@ -27,8 +27,8 @@ func NewRouter(cfg *RouterConfig, handler *handler.Handler) http.Handler {
 		r.Post("/", handler.CreateFeed)
 		r.Get("/", handler.GetAll)
 		r.Get("/{source}", handler.GetFeed)
-		r.Put("/{id}", handler.UpdateFeed)
-		r.Delete("/{id}", handler.DeleteFeed)
+		r.Put("/", handler.UpdateFeed)
+		r.Delete("/{source}", handler.DeleteFeed)
 	})
 
 	return r
