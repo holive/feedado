@@ -4,6 +4,7 @@ import (
 	"github.com/holive/feedado/app/config"
 	"github.com/holive/feedado/app/feed"
 	"github.com/holive/feedado/app/mongo"
+	"github.com/holive/feedado/app/user"
 	infraHTTP "github.com/holive/gopkg/net/http"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
@@ -16,6 +17,7 @@ type Feedado struct {
 
 type Services struct {
 	Feed *feed.Service
+	User *user.Service
 }
 
 func New() (*Feedado, error) {
@@ -44,7 +46,7 @@ func New() (*Feedado, error) {
 		return nil, errors.Wrap(err, "could not initialize logger")
 	}
 
-	f.Services, err = initServices(f.Cfg, db, httpClient, logger)
+	f.Services, err = initServices(db, httpClient, logger)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not initialize services")
 	}
@@ -52,10 +54,12 @@ func New() (*Feedado, error) {
 	return f, nil
 }
 
-func initServices(cfg *config.Config, db *mongo.Client, client infraHTTP.Runner, logger *zap.SugaredLogger) (*Services, error) {
-	feedService := initFeedService(db, client) // TODO: do I need the logger?
+func initServices(db *mongo.Client, client infraHTTP.Runner, logger *zap.SugaredLogger) (*Services, error) {
+	feedService := initFeedService(db, client)
+	userService := initUserService(db)
 
 	return &Services{
 		Feed: feedService,
+		User: userService,
 	}, nil
 }

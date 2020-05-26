@@ -25,10 +25,18 @@ func NewRouter(cfg *RouterConfig, handler *handler.Handler) http.Handler {
 
 	r.Route("/feed", func(r chi.Router) {
 		r.Post("/", handler.CreateFeed)
-		r.Get("/", handler.GetAll)
+		r.Get("/", handler.GetAllFeeds)
 		r.Get("/{source}", handler.GetFeed)
 		r.Put("/", handler.UpdateFeed)
 		r.Delete("/{source}", handler.DeleteFeed)
+	})
+
+	r.Route("/user", func(r chi.Router) {
+		r.Post("/", handler.CreateUser)
+		r.Get("/", handler.GetAllUsers)
+		r.Get("/{email}", handler.GetUser)
+		r.Put("/", handler.UpdateUser)
+		r.Delete("/{email}", handler.DeleteUser)
 	})
 
 	return r

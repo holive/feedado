@@ -93,7 +93,7 @@ func (h *Handler) GetFeed(w http.ResponseWriter, r *http.Request) {
 	respondWithJSON(w, http.StatusOK, f)
 }
 
-func (h *Handler) GetAll(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) GetAllFeeds(w http.ResponseWriter, r *http.Request) {
 	limit := r.URL.Query().Get("limit")
 	offset := r.URL.Query().Get("offset")
 

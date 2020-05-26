@@ -16,3 +16,7 @@ func initMongoClient(cfg *config.Config) (*mongo.Client, error) {
 func initMongoFeedRepository(client *mongo.Client) *mongo.FeedRepository {
 	return mongo.NewFeedRepository(client)
 }
+
+func initMongoUserRepository(client *mongo.Client) *mongo.UserRepository {
+	return mongo.NewUserRepository(client)
+}

@@ -54,11 +54,9 @@ func (fr *FeedRepository) Update(ctx context.Context, newFeed *feed.Feed) error 
 func (fr *FeedRepository) Delete(ctx context.Context, source string) error {
 	filter := bson.M{"source": bson.M{"$eq": source}}
 
-	if _, err := fr.collection.DeleteOne(ctx, filter); err != nil {
-		return err
-	}
+	_, err := fr.collection.DeleteOne(ctx, filter)
 
-	return nil
+	return err
 }
 
 func (fr *FeedRepository) FindBySource(ctx context.Context, source string) (*feed.Feed, error) {
