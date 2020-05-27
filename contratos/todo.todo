@@ -21,7 +21,6 @@ o client bate na api pra pegar o feed do usuário. A api vai pegar no banco os s
 
 -------------------------------------------
 
-- dependencies health check
-- tratar urls antes de cadastrar
+
 - implementar o logger
 - atualizar email do usuário?
