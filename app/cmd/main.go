@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"os"
 
@@ -15,6 +16,11 @@ func main() {
 	if err != nil {
 		fmt.Println(errors.Wrap(err, "could not run Feedado").Error())
 		os.Exit(1)
+	}
+
+	err = app.FeedWorker.Start(context.Background())
+	if err != nil {
+		fmt.Println(errors.Wrap(err, "could not initialize worker"))
 	}
 
 	server, err := http.NewServer(&http.ServerConfig{

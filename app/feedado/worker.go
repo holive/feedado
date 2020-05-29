@@ -1,17 +1,16 @@
 package feedado
 
 import (
-	"database/sql"
-
+	"github.com/holive/feedado/app/config"
+	"github.com/holive/feedado/app/mongo"
+	"github.com/holive/feedado/app/worker"
 	infraHTTP "github.com/holive/gopkg/net/http"
-	"gitlab.vpc-zoom-01/squad-data/coffe/app/config"
-	"gitlab.vpc-zoom-01/squad-data/coffe/app/worker"
 	"go.uber.org/zap"
 )
 
-func initWorkerOffer(cfg config.Config, logger *zap.SugaredLogger, db *sql.DB, runner infraHTTP.Runner) (*worker.Worker, error) {
+func initWorkerRSS(cfg *config.Config, logger *zap.SugaredLogger, db *mongo.Client, runner infraHTTP.Runner) (*worker.Worker, error) {
 
-	processor, err := initOfferProcessor(cfg, logger, db, runner)
+	processor, err := initRSSProcessor(cfg, logger, db, runner)
 	if err != nil {
 		return nil, err
 	}

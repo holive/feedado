@@ -1,6 +1,8 @@
 package feedado
 
 import (
+	"github.com/holive/feedado/app/worker"
+
 	"github.com/holive/feedado/app/config"
 	"github.com/holive/feedado/app/feed"
 	"github.com/holive/feedado/app/mongo"
@@ -11,8 +13,9 @@ import (
 )
 
 type Feedado struct {
-	Cfg      *config.Config
-	Services *Services
+	Cfg        *config.Config
+	Services   *Services
+	FeedWorker *worker.Worker
 }
 
 type Services struct {
@@ -51,7 +54,7 @@ func New() (*Feedado, error) {
 		return nil, errors.Wrap(err, "could not initialize services")
 	}
 
-	worker, err := createWorkers(cfg, apis, providers)
+	f.FeedWorker, err = initWorkerRSS(f.Cfg, logger, db, httpClient)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not initialize the worker")
 	}
