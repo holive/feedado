@@ -4,6 +4,8 @@ import (
 	"os"
 	"time"
 
+	"github.com/holive/feedado/app/rss"
+
 	"github.com/holive/feedado/app/worker"
 
 	"github.com/pkg/errors"
@@ -36,11 +38,12 @@ type HTTPClient struct {
 }
 
 type Config struct {
-	HTTPServer *HTTPServer
-	HTTPClient *HTTPClient
-	Mongo      *DB
-	FeedPubSub *gocloud.OfferPubSubCfg
-	FeedWorker *worker.Options
+	HTTPServer   *HTTPServer
+	HTTPClient   *HTTPClient
+	Mongo        *DB
+	RSSPubSub    *gocloud.OfferPubSubCfg
+	RSSWorker    *worker.Options
+	RSSProcessor *rss.ProcessorConfig
 }
 
 func New() (*Config, error) {

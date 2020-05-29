@@ -20,3 +20,7 @@ func initMongoFeedRepository(client *mongo.Client) *mongo.FeedRepository {
 func initMongoUserRepository(client *mongo.Client) *mongo.UserRepository {
 	return mongo.NewUserRepository(client)
 }
+
+func initMongoRSSRepository(client *mongo.Client) *mongo.RSSRepository {
+	return mongo.NewRSSRepository(client)
+}
