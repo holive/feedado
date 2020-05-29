@@ -51,6 +51,11 @@ func New() (*Feedado, error) {
 		return nil, errors.Wrap(err, "could not initialize services")
 	}
 
+	worker, err := createWorkers(cfg, apis, providers)
+	if err != nil {
+		return nil, errors.Wrap(err, "could not initialize the worker")
+	}
+
 	return f, nil
 }
 

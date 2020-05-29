@@ -4,6 +4,8 @@ import (
 	"os"
 	"time"
 
+	"github.com/holive/feedado/app/worker"
+
 	"github.com/pkg/errors"
 	"github.com/spf13/viper"
 )
@@ -37,6 +39,8 @@ type Config struct {
 	HTTPServer *HTTPServer
 	HTTPClient *HTTPClient
 	Mongo      *DB
+	FeedPubSub *gocloud.OfferPubSubCfg
+	FeedWorker *worker.Options
 }
 
 func New() (*Config, error) {

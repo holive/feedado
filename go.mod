@@ -9,4 +9,6 @@ require (
 	github.com/spf13/viper v1.6.3
 	go.mongodb.org/mongo-driver v1.3.3
 	go.uber.org/zap v1.15.0
+	gocloud.dev v0.16.0
+	golang.org/x/sync v0.0.0-20190423024810-112230192c58
 )
