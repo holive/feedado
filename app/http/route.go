@@ -41,3 +41,16 @@ func NewRouter(cfg *RouterConfig, handler *handler.Handler) http.Handler {
 
 	return r
 }
+
+func NewWorkerRouter(cfg *RouterConfig, handler *handler.WorkerHandler) http.Handler {
+	r := chi.NewRouter()
+
+	r.Use(chiMiddleware.RequestID)
+	r.Use(chiMiddleware.RealIP)
+	r.Use(chiMiddleware.Recoverer)
+	r.Use(chiMiddleware.Timeout(cfg.MiddlewareTimeout))
+
+	r.Get("/health", handler.Health)
+
+	return r
+}

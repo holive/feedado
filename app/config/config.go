@@ -4,9 +4,10 @@ import (
 	"os"
 	"time"
 
-	"github.com/holive/feedado/app/rss"
-
 	"github.com/holive/feedado/app/worker"
+
+	"github.com/holive/feedado/app/gocloud"
+	"github.com/holive/feedado/app/rss"
 
 	"github.com/pkg/errors"
 	"github.com/spf13/viper"
@@ -41,19 +42,19 @@ type Config struct {
 	HTTPServer   *HTTPServer
 	HTTPClient   *HTTPClient
 	Mongo        *DB
-	RSSPubSub    *gocloud.OfferPubSubCfg
+	RSSPubSub    *gocloud.RSSPubSubCfg
 	RSSWorker    *worker.Options
 	RSSProcessor *rss.ProcessorConfig
 }
 
-func New() (*Config, error) {
+func New(configPath string) (*Config, error) {
 	profile := os.Getenv("APP_PROFILE")
 
 	if profile == "" {
 		profile = "development"
 	}
 
-	viper.AddConfigPath("./config")
+	viper.AddConfigPath(configPath)
 	viper.SetConfigName(profile)
 
 	if err := viper.MergeInConfig(); err != nil {

@@ -1,11 +1,10 @@
 package feedado
 
 import (
-	"github.com/holive/feedado/app/worker"
-
 	"github.com/holive/feedado/app/config"
 	"github.com/holive/feedado/app/feed"
 	"github.com/holive/feedado/app/mongo"
+	"github.com/holive/feedado/app/rss"
 	"github.com/holive/feedado/app/user"
 	infraHTTP "github.com/holive/gopkg/net/http"
 	"github.com/pkg/errors"
@@ -13,14 +12,14 @@ import (
 )
 
 type Feedado struct {
-	Cfg        *config.Config
-	Services   *Services
-	FeedWorker *worker.Worker
+	Cfg      *config.Config
+	Services *Services
 }
 
 type Services struct {
 	Feed *feed.Service
 	User *user.Service
+	RSS  *rss.Service
 }
 
 func New() (*Feedado, error) {
@@ -29,7 +28,7 @@ func New() (*Feedado, error) {
 		f   = &Feedado{}
 	)
 
-	f.Cfg, err = loadConfig()
+	f.Cfg, err = loadConfig("./config/api")
 	if err != nil {
 		return nil, errors.Wrap(err, "could not load config")
 	}
@@ -49,25 +48,19 @@ func New() (*Feedado, error) {
 		return nil, errors.Wrap(err, "could not initialize logger")
 	}
 
-	f.Services, err = initServices(db, httpClient, logger)
-	if err != nil {
-		return nil, errors.Wrap(err, "could not initialize services")
-	}
-
-	f.FeedWorker, err = initWorkerRSS(f.Cfg, logger, db, httpClient)
-	if err != nil {
-		return nil, errors.Wrap(err, "could not initialize the worker")
-	}
+	f.Services = initServices(f.Cfg, db, httpClient, logger)
 
 	return f, nil
 }
 
-func initServices(db *mongo.Client, client infraHTTP.Runner, logger *zap.SugaredLogger) (*Services, error) {
+func initServices(cfg *config.Config, db *mongo.Client, client infraHTTP.Runner, logger *zap.SugaredLogger) *Services {
 	feedService := initFeedService(db, client)
 	userService := initUserService(db)
+	rssService := initRssService(db, client)
 
 	return &Services{
 		Feed: feedService,
 		User: userService,
-	}, nil
+		RSS:  rssService,
+	}
 }

@@ -1,0 +1,26 @@
+HTTPServer:
+  Addr: ':8080'
+  MaxHeaderBytes: 1048576
+  IdleTimeout: 600s
+  ReadHeaderTimeout: 1s
+  ReadTimeout: 1s
+  WriteTimeout: 7s
+  Router:
+    MiddlewareTimeout: 6s
+HTTPClient:
+  Timeout: 4s
+  UserAgent: feedadoWorker
+Mongo:
+  URI: mongodb://localhost:27017
+  Database: feedado
+  Timeout: 5
+RSSPubSub:
+  Name: feedado-development
+  Service: sqs
+  Region: us-east-1
+RSSWorker:
+  Name:           feedado-worker
+  Concurrency:    5
+  ReceiveTimeout: 60s
+RSSProcessor:
+  UserAgent: feedadoWorker

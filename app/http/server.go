@@ -11,7 +11,6 @@ import (
 )
 
 type Server struct {
-	//handler http.Handler
 	server *http.Server
 }
 
@@ -35,6 +34,18 @@ func NewServer(cfg *ServerConfig, services *feedado.Services) (*Server, error) {
 		Services: services,
 	})
 
+	return newServer(router, cfg), nil
+}
+
+func NewWorkerServer(cfg *ServerConfig, services *feedado.WorkerServices) (*Server, error) {
+	router := NewWorkerRouter(cfg.Router, &handler.WorkerHandler{
+		Services: services,
+	})
+
+	return newServer(router, cfg), nil
+}
+
+func newServer(router http.Handler, cfg *ServerConfig) *Server {
 	return &Server{
 		server: &http.Server{
 			Handler:           router,
@@ -45,5 +56,5 @@ func NewServer(cfg *ServerConfig, services *feedado.Services) (*Server, error) {
 			ReadTimeout:       cfg.ReadTimeout,
 			WriteTimeout:      cfg.WriteTimeout,
 		},
-	}, nil
+	}
 }
