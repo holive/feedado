@@ -11,7 +11,7 @@ import (
 )
 
 type Processor struct {
-	updater   Repository
+	updater   WorkerRepository
 	userAgent string
 	runner    infraHTTP.Runner
 	logger    *zap.SugaredLogger
@@ -25,7 +25,7 @@ func (w *Processor) Process(ctx context.Context, message []byte) error {
 	panic("missing Process implementation")
 }
 
-func NewProcessor(updater Repository, cfg *ProcessorConfig, runner infraHTTP.Runner, logger *zap.SugaredLogger) (*Processor, error) {
+func NewProcessor(updater WorkerRepository, cfg *ProcessorConfig, runner infraHTTP.Runner, logger *zap.SugaredLogger) (*Processor, error) {
 	if updater == nil {
 		return nil, errors.New("updater can't be nil")
 	}

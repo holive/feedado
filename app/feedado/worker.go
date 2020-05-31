@@ -19,8 +19,8 @@ type Worker struct {
 }
 
 type WorkerServices struct {
-	Feed *feed.Service
-	RSS  *rss.Service
+	Feed *feed.WorkerService
+	RSS  *rss.WorkerService
 }
 
 func NewWorker() (*Worker, error) {
@@ -60,8 +60,8 @@ func NewWorker() (*Worker, error) {
 }
 
 func (w *Worker) initWorkerServices(db *mongo.Client) *WorkerServices {
-	feedService := initFeedService(db, w.runner) //
-	rssService := initRssService(db, w.runner)
+	feedService := initFeedWorkerService(db, w.runner)
+	rssService := initRssWorkerService(db, w.runner)
 
 	return &WorkerServices{
 		Feed: feedService,

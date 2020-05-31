@@ -11,3 +11,9 @@ func initFeedService(db *mongo.Client, client infraHTTP.Runner) *feed.Service {
 
 	return feed.NewService(repository, client)
 }
+
+func initFeedWorkerService(db *mongo.Client, client infraHTTP.Runner) *feed.WorkerService {
+	repository := initMongoFeedRepository(db)
+
+	return feed.NewWorkerService(repository, client)
+}

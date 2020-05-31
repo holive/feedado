@@ -10,11 +10,16 @@ import (
 
 func initRssService(db *mongo.Client, runner infraHTTP.Runner) *rss.Service {
 	repository := initMongoRSSRepository(db)
-	rssService := rss.NewService(repository, runner)
 
-	return rssService
+	return rss.NewService(repository, runner)
 }
 
-func initRSSProcessor(cfg *config.Config, logger *zap.SugaredLogger, repository rss.Repository, runner infraHTTP.Runner) (*rss.Processor, error) {
+func initRSSProcessor(cfg *config.Config, logger *zap.SugaredLogger, repository rss.WorkerRepository, runner infraHTTP.Runner) (*rss.Processor, error) {
 	return rss.NewProcessor(repository, cfg.RSSProcessor, runner, logger)
+}
+
+func initRssWorkerService(db *mongo.Client, runner infraHTTP.Runner) *rss.WorkerService {
+	repository := initMongoRSSRepository(db)
+
+	return rss.NewWorkerService(repository, runner)
 }
