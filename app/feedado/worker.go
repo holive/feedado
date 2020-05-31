@@ -11,21 +11,22 @@ import (
 	"go.uber.org/zap"
 )
 
-type FeedadoWorker struct {
+type Worker struct {
 	Cfg      *config.Config
 	Services *WorkerServices
+	worker   *worker.Worker
+	runner   infraHTTP.Runner
 }
 
 type WorkerServices struct {
-	Feed   *feed.Service
-	RSS    *rss.Service
-	worker *worker.Worker
+	Feed *feed.Service
+	RSS  *rss.Service
 }
 
-func NewWorker() (*FeedadoWorker, error) {
+func NewWorker() (*Worker, error) {
 	var (
 		err error
-		w   = &FeedadoWorker{}
+		w   = &Worker{}
 	)
 
 	w.Cfg, err = loadConfig("./config/worker")
@@ -38,7 +39,7 @@ func NewWorker() (*FeedadoWorker, error) {
 		return nil, errors.Wrap(err, "could not initialize mongo client")
 	}
 
-	httpClient, err := initHTTPClient(w.Cfg)
+	w.runner, err = initHTTPClient(w.Cfg)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not initialize http client")
 	}
@@ -48,37 +49,41 @@ func NewWorker() (*FeedadoWorker, error) {
 		return nil, errors.Wrap(err, "could not initialize logger")
 	}
 
-	w.Services, err = initWorkerServices(w.Cfg, db, httpClient, logger)
+	w.Services = w.initWorkerServices(db)
+
+	err = w.initWorker(logger)
 	if err != nil {
-		return nil, errors.Wrap(err, "could not initialize worker services")
+		return nil, err
 	}
 
 	return w, nil
 }
 
-func initWorkerServices(cfg *config.Config, db *mongo.Client, client infraHTTP.Runner, logger *zap.SugaredLogger) (
-	*WorkerServices, error) {
-	feedService := initFeedService(db, client)
-	rssService := initRssService(db, client)
-
-	processor, err := initRSSProcessor(cfg, logger, rssService, client)
-	if err != nil {
-		return nil, err
-	}
-
-	receiver, err := initGoCloudOfferReceiver(cfg)
-	if err != nil {
-		return nil, err
-	}
-
-	w, err := worker.New(cfg.RSSWorker, logger, receiver, processor)
-	if err != nil {
-		return nil, errors.Wrap(err, "could not initialize the worker")
-	}
+func (w *Worker) initWorkerServices(db *mongo.Client) *WorkerServices {
+	feedService := initFeedService(db, w.runner) //
+	rssService := initRssService(db, w.runner)
 
 	return &WorkerServices{
-		Feed:   feedService,
-		RSS:    rssService,
-		worker: w,
-	}, nil
+		Feed: feedService,
+		RSS:  rssService,
+	}
+}
+
+func (w *Worker) initWorker(logger *zap.SugaredLogger) error {
+	processor, err := initRSSProcessor(w.Cfg, logger, w.Services.RSS, w.runner)
+	if err != nil {
+		return errors.Wrap(err, "could not initialize worker rss processor")
+	}
+
+	receiver, err := initGoCloudOfferReceiver(w.Cfg)
+	if err != nil {
+		return errors.Wrap(err, "could not initialize worker rss receiver")
+	}
+
+	w.worker, err = worker.New(w.Cfg.RSSWorker, logger, receiver, processor)
+	if err != nil {
+		return errors.Wrap(err, "could not initialize the worker")
+	}
+
+	return nil
 }

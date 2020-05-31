@@ -52,5 +52,9 @@ func NewWorkerRouter(cfg *RouterConfig, handler *handler.WorkerHandler) http.Han
 
 	r.Get("/health", handler.Health)
 
+	r.Route("/rss", func(r chi.Router) {
+		r.Post("/", handler.RSS)
+	})
+
 	return r
 }
