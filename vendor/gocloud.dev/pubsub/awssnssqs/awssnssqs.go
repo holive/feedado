@@ -70,6 +70,7 @@ import (
 	"net/url"
 	"path"
 	"strconv"
+	"strings"
 	"sync"
 	"time"
 	"unicode/utf8"
@@ -182,11 +183,13 @@ const SNSScheme = "awssns"
 // pubsub.DefaultMux.
 const SQSScheme = "awssqs"
 
-// URLOpener opens AWS SNS/SQS URLs like "awssns://sns-topic-arn" for
+// URLOpener opens AWS SNS/SQS URLs like "awssns:///sns-topic-arn" for
 // SNS topics or "awssqs://sqs-queue-url" for SQS topics and subscriptions.
 //
 // For SNS topics, the URL's host+path is used as the topic Amazon Resource Name
-// (ARN).
+// (ARN). Since ARNs have ":" in them, and ":" precedes a port in URL
+// hostnames, leave the host blank and put the ARN in the path
+// (e.g., "awssns:///arn:aws:service:region:accountid:resourceType/resourcePath").
 //
 // For SQS topics and subscriptions, the URL's host+path is prefixed with
 // "https://" to create the queue URL.
@@ -220,7 +223,10 @@ func (o *URLOpener) OpenTopicURL(ctx context.Context, u *url.URL) (*pubsub.Topic
 	configProvider.Configs = append(configProvider.Configs, overrideCfg)
 	switch u.Scheme {
 	case SNSScheme:
-		topicARN := path.Join(u.Host, u.Path)
+		// Trim leading "/" if host is empty, so that
+		// awssns:///arn:aws:service:region:accountid:resourceType/resourcePath
+		// gives "arn:..." instead of "/arn:...".
+		topicARN := strings.TrimPrefix(path.Join(u.Host, u.Path), "/")
 		return OpenSNSTopic(ctx, configProvider, topicARN, &o.TopicOptions), nil
 	case SQSScheme:
 		qURL := "https://" + path.Join(u.Host, u.Path)
