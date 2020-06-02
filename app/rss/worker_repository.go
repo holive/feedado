@@ -6,7 +6,8 @@ import (
 	"github.com/holive/feedado/app/feed"
 )
 
-type WorkerRepository interface {
+type Updater interface {
+	Create(ctx context.Context, feeds []*RSS) error
 }
 
 type SchemaGetter interface {

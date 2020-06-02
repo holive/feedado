@@ -9,17 +9,17 @@ import (
 )
 
 func initRssService(db *mongo.Client, runner infraHTTP.Runner) *rss.Service {
-	repository := initMongoRSSRepository(db)
+	repository := initMongoRssRepository(db)
 
 	return rss.NewService(repository, runner)
 }
 
-func initRSSProcessor(cfg *config.Config, logger *zap.SugaredLogger, repository rss.WorkerRepository, runner infraHTTP.Runner) (*rss.Processor, error) {
+func initRSSProcessor(cfg *config.Config, logger *zap.SugaredLogger, repository rss.Updater, runner infraHTTP.Runner) (*rss.Processor, error) {
 	return rss.NewProcessor(repository, cfg.RSSProcessor, runner, logger)
 }
 
 func initRssWorkerService(db *mongo.Client, runner infraHTTP.Runner) *rss.WorkerService {
-	repository := initMongoRSSRepository(db)
+	repository := initMongoRssWorkerRepository(db)
 
 	return rss.NewWorkerService(repository, runner)
 }

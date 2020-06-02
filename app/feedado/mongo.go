@@ -21,6 +21,10 @@ func initMongoUserRepository(client *mongo.Client) *mongo.UserRepository {
 	return mongo.NewUserRepository(client)
 }
 
-func initMongoRSSRepository(client *mongo.Client) *mongo.RSSRepository {
-	return mongo.NewRSSRepository(client)
+func initMongoRssRepository(client *mongo.Client) *mongo.RSSRepository {
+	return mongo.NewRssRepository(client)
+}
+
+func initMongoRssWorkerRepository(client *mongo.Client) *mongo.RssWorkerRepository {
+	return mongo.NewRssWorkerRepository(client)
 }

@@ -14,7 +14,7 @@ import (
 )
 
 type Processor struct {
-	updater      WorkerRepository
+	updater      Updater
 	schemaGetter SchemaGetter
 	userAgent    string
 	runner       infraHTTP.Runner
@@ -26,7 +26,10 @@ type ProcessorConfig struct {
 }
 
 func (w *Processor) Process(ctx context.Context, message []byte) error {
-	var m map[string]string
+	var m struct {
+		ID string `json:"_id"`
+	}
+
 	if err := json.Unmarshal(message, &m); err != nil {
 		return errors.Wrap(err, "could not unmarshal message")
 	}
@@ -37,18 +40,26 @@ func (w *Processor) Process(ctx context.Context, message []byte) error {
 	//}
 
 	var schema *feed.Feed
-	schema, err := w.schemaGetter.Find(ctx, m["_id"])
+	schema, err := w.schemaGetter.Find(ctx, m.ID)
 	if err != nil {
 		return errors.Wrap(err, "could not find schema")
 	}
 
-	// TODO: fetch webpage info
-	_ = schema
+	rssResults, err := fetchRssResults(schema)
+	if err != nil {
+		return errors.Wrap(err, "could not unmarshal message")
+	}
+
+	err = w.updater.Create(ctx, rssResults)
 
 	return nil
 }
 
-func NewProcessor(updater WorkerRepository, cfg *ProcessorConfig, runner infraHTTP.Runner, logger *zap.SugaredLogger) (*Processor, error) {
+func fetchRssResults(schema *feed.Feed) ([]*feed.Feed, error) {
+	panic("implement me")
+}
+
+func NewProcessor(updater Updater, cfg *ProcessorConfig, runner infraHTTP.Runner, logger *zap.SugaredLogger) (*Processor, error) {
 	if updater == nil {
 		return nil, errors.New("updater can't be nil")
 	}
