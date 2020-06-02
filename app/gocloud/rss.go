@@ -21,7 +21,6 @@ type RSSPublisher struct {
 }
 
 func (op *RSSPublisher) Publish(ctx context.Context, r rss.RSS) error {
-
 	rawMessage, err := json.Marshal(r)
 	if err != nil {
 		return errors.Wrap(err, "Cloud not encode update message")

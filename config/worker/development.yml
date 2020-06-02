@@ -3,7 +3,7 @@ HTTPServer:
   MaxHeaderBytes: 1048576
   IdleTimeout: 600s
   ReadHeaderTimeout: 1s
-  ReadTimeout: 1s
+  ReadTimeout: 2s
   WriteTimeout: 7s
   Router:
     MiddlewareTimeout: 6s
@@ -15,12 +15,12 @@ Mongo:
   Database: feedado
   Timeout: 5
 RSSPubSub:
-  Name: feedado-development
+  Name: feedado-worker-rss-dev
   Service: sqs
   Region: us-east-1
 RSSWorker:
   Name:           feedado-worker
-  Concurrency:    5
+  Concurrency:    1
   ReceiveTimeout: 60s
 RSSProcessor:
   UserAgent: feedadoWorker

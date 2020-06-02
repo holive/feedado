@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"os"
 
@@ -11,21 +12,23 @@ import (
 )
 
 func main() {
-	app, err := feedado.NewWorker()
+	worker, err := feedado.NewWorker()
 	if err != nil {
 		fmt.Println(errors.Wrap(err, "could not run Feedado worker").Error())
 		os.Exit(1)
 	}
 
+	err = worker.Worker.Start(context.Background())
+
 	server, err := http.NewWorkerServer(&http.ServerConfig{
-		Addr:              app.Cfg.HTTPServer.Addr,
-		MaxHeaderBytes:    app.Cfg.HTTPServer.MaxHeaderBytes,
-		IdleTimeout:       app.Cfg.HTTPServer.IdleTimeout,
-		ReadHeaderTimeout: app.Cfg.HTTPServer.ReadHeaderTimeout,
-		ReadTimeout:       app.Cfg.HTTPServer.ReadTimeout,
-		WriteTimeout:      app.Cfg.HTTPServer.WriteTimeout,
-		Router:            &http.RouterConfig{MiddlewareTimeout: app.Cfg.HTTPServer.Router.MiddlewareTimeout},
-	}, app.Services)
+		Addr:              worker.Cfg.HTTPServer.Addr,
+		MaxHeaderBytes:    worker.Cfg.HTTPServer.MaxHeaderBytes,
+		IdleTimeout:       worker.Cfg.HTTPServer.IdleTimeout,
+		ReadHeaderTimeout: worker.Cfg.HTTPServer.ReadHeaderTimeout,
+		ReadTimeout:       worker.Cfg.HTTPServer.ReadTimeout,
+		WriteTimeout:      worker.Cfg.HTTPServer.WriteTimeout,
+		Router:            &http.RouterConfig{MiddlewareTimeout: worker.Cfg.HTTPServer.Router.MiddlewareTimeout},
+	}, worker.Services)
 	if err != nil {
 		fmt.Println(errors.Wrap(err, "could not run Feedado Worker").Error())
 		os.Exit(1)

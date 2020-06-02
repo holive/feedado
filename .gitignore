@@ -1,0 +1,5 @@
+__worker
+__api
+/.idea
+app/cmd/worker/main
+app/cmd/api/main

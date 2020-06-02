@@ -62,8 +62,6 @@ func (m *Worker) Start(ctx context.Context) error {
 					// 	"error", err,
 					// 	"name", m.name,
 					// )
-					// Workaround for connection reset by peer.
-					// TODO: Integrate APM.
 					return err
 				}
 
@@ -102,6 +100,7 @@ func (m *Worker) receive(ctx context.Context) error {
 	}
 
 	message, err := m.receiver.Receive(ctx)
+
 	if err != nil {
 		if err.Error() == "context deadline exceeded" {
 			return m.shutdown()

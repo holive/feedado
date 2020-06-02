@@ -14,7 +14,7 @@ import (
 type Worker struct {
 	Cfg      *config.Config
 	Services *WorkerServices
-	worker   *worker.Worker
+	Worker   *worker.Worker
 	runner   infraHTTP.Runner
 }
 
@@ -80,7 +80,7 @@ func (w *Worker) initWorker(logger *zap.SugaredLogger) error {
 		return errors.Wrap(err, "could not initialize worker rss receiver")
 	}
 
-	w.worker, err = worker.New(w.Cfg.RSSWorker, logger, receiver, processor)
+	w.Worker, err = worker.New(w.Cfg.RSSWorker, logger, receiver, processor)
 	if err != nil {
 		return errors.Wrap(err, "could not initialize the worker")
 	}
