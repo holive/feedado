@@ -39,7 +39,6 @@ func (w *Processor) Process(ctx context.Context, message []byte) error {
 	//	return err
 	//}
 
-	var schema *feed.Feed
 	schema, err := w.schemaGetter.Find(ctx, m.ID)
 	if err != nil {
 		return errors.Wrap(err, "could not find schema")
@@ -55,13 +54,22 @@ func (w *Processor) Process(ctx context.Context, message []byte) error {
 	return nil
 }
 
-func fetchRssResults(schema *feed.Feed) ([]*feed.Feed, error) {
+func fetchRssResults(schema *feed.Feed) ([]*RSS, error) {
 	panic("implement me")
 }
 
-func NewProcessor(updater Updater, cfg *ProcessorConfig, runner infraHTTP.Runner, logger *zap.SugaredLogger) (*Processor, error) {
+func NewProcessor(updater Updater,
+	cfg *ProcessorConfig,
+	runner infraHTTP.Runner,
+	logger *zap.SugaredLogger,
+	schemaGetter SchemaGetter) (*Processor, error) {
+
 	if updater == nil {
 		return nil, errors.New("updater can't be nil")
+	}
+
+	if schemaGetter == nil {
+		return nil, errors.New("schemaGetter can't be nil")
 	}
 
 	if cfg.UserAgent == "" {
@@ -69,9 +77,10 @@ func NewProcessor(updater Updater, cfg *ProcessorConfig, runner infraHTTP.Runner
 	}
 
 	return &Processor{
-		updater:   updater,
-		userAgent: cfg.UserAgent,
-		runner:    runner,
-		logger:    logger,
+		updater:      updater,
+		schemaGetter: schemaGetter,
+		userAgent:    cfg.UserAgent,
+		runner:       runner,
+		logger:       logger,
 	}, nil
 }

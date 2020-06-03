@@ -2,7 +2,6 @@ package feedado
 
 import (
 	"github.com/holive/feedado/app/config"
-	"github.com/holive/feedado/app/feed"
 	"github.com/holive/feedado/app/mongo"
 	"github.com/holive/feedado/app/rss"
 	"github.com/holive/feedado/app/worker"
@@ -19,8 +18,7 @@ type Worker struct {
 }
 
 type WorkerServices struct {
-	Feed *feed.WorkerService
-	RSS  *rss.WorkerService
+	RSS *rss.WorkerService
 }
 
 func NewWorker() (*Worker, error) {
@@ -49,9 +47,9 @@ func NewWorker() (*Worker, error) {
 		return nil, errors.Wrap(err, "could not initialize logger")
 	}
 
-	w.Services = w.initWorkerServices(db)
+	w.Services = w.initWorkerServices()
 
-	err = w.initWorker(logger)
+	err = w.initWorker(logger, db)
 	if err != nil {
 		return nil, err
 	}
@@ -59,18 +57,16 @@ func NewWorker() (*Worker, error) {
 	return w, nil
 }
 
-func (w *Worker) initWorkerServices(db *mongo.Client) *WorkerServices {
-	feedService := initFeedWorkerService(db, w.runner)
-	rssService := initRssWorkerService(db, w.runner)
+func (w *Worker) initWorkerServices() *WorkerServices {
+	rssService := initRssWorkerService(w.runner)
 
 	return &WorkerServices{
-		Feed: feedService,
-		RSS:  rssService,
+		RSS: rssService,
 	}
 }
 
-func (w *Worker) initWorker(logger *zap.SugaredLogger) error {
-	processor, err := initRSSProcessor(w.Cfg, logger, w.Services.RSS, w.runner)
+func (w *Worker) initWorker(logger *zap.SugaredLogger, db *mongo.Client) error {
+	processor, err := initRssProcessor(w.Cfg, logger, w.runner, db)
 	if err != nil {
 		return errors.Wrap(err, "could not initialize worker rss processor")
 	}

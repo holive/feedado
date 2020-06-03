@@ -152,6 +152,6 @@ func (fr *FeedRepository) resultFromCursor(ctx context.Context, cur *mongo.Curso
 
 func NewFeedRepository(conn *Client) *FeedRepository {
 	return &FeedRepository{
-		collection: conn.db.Collection("feed"),
+		collection: conn.db.Collection(FeedCollection),
 	}
 }

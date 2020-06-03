@@ -14,12 +14,17 @@ func initRssService(db *mongo.Client, runner infraHTTP.Runner) *rss.Service {
 	return rss.NewService(repository, runner)
 }
 
-func initRSSProcessor(cfg *config.Config, logger *zap.SugaredLogger, repository rss.Updater, runner infraHTTP.Runner) (*rss.Processor, error) {
-	return rss.NewProcessor(repository, cfg.RSSProcessor, runner, logger)
+func initRssProcessor(cfg *config.Config,
+	logger *zap.SugaredLogger,
+	runner infraHTTP.Runner,
+	db *mongo.Client) (*rss.Processor, error) {
+
+	rssRepo := initMongoRssWorkerRepository(db)
+	schemaGetter := mongo.NewFeedWorkerRepository(db)
+
+	return rss.NewProcessor(rssRepo, cfg.RSSProcessor, runner, logger, schemaGetter)
 }
 
-func initRssWorkerService(db *mongo.Client, runner infraHTTP.Runner) *rss.WorkerService {
-	repository := initMongoRssWorkerRepository(db)
-
-	return rss.NewWorkerService(repository, runner)
+func initRssWorkerService(runner infraHTTP.Runner) *rss.WorkerService {
+	return rss.NewWorkerService(runner)
 }

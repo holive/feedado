@@ -153,6 +153,6 @@ func (ur *UserRepository) resultFromCursor(ctx context.Context, cur *mongo.Curso
 
 func NewUserRepository(conn *Client) *UserRepository {
 	return &UserRepository{
-		collection: conn.db.Collection("user"),
+		collection: conn.db.Collection(UserCollection),
 	}
 }

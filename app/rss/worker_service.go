@@ -7,17 +7,16 @@ import (
 )
 
 type WorkerService struct {
-	repo       Updater
 	httpRunner infraHTTP.Runner
 }
 
 func (w WorkerService) Create(ctx context.Context, feeds []*RSS) error {
+	// não precisa do create aqui.. só um trigger pro
 	panic("implement me")
 }
 
-func NewWorkerService(repository Updater, client infraHTTP.Runner) *WorkerService {
+func NewWorkerService(client infraHTTP.Runner) *WorkerService {
 	return &WorkerService{
-		repo:       repository,
 		httpRunner: client,
 	}
 }

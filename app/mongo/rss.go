@@ -17,6 +17,6 @@ func (rr *RSSRepository) Create(ctx context.Context, rss *rss.RSS) (*rss.RSS, er
 
 func NewRssRepository(conn *Client) *RSSRepository {
 	return &RSSRepository{
-		collection: conn.db.Collection("rss"),
+		collection: conn.db.Collection(RssCollection),
 	}
 }

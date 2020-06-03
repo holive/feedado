@@ -11,6 +11,12 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+const (
+	FeedCollection = "feed"
+	RssCollection  = "rss"
+	UserCollection = "user"
+)
+
 type Client struct {
 	db *mongo.Database
 }
