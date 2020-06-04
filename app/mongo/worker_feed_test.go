@@ -3,34 +3,12 @@ package mongo
 import (
 	"context"
 	"testing"
-	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 
-	"go.mongodb.org/mongo-driver/mongo/readpref"
-
 	"github.com/stretchr/testify/require"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 )
-
-func NewConnectionTest() (*mongo.Client, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	client, _ := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://localhost:27017"))
-	err := client.Ping(ctx, readpref.Primary())
-	if err != nil {
-		return nil, err
-	}
-
-	return client, nil
-}
-
-func NewDBTest(client *mongo.Client) *Client {
-	return &Client{db: client.Database("test")}
-}
 
 func TestFeedWorkerRepository_Find(t *testing.T) {
 	client, err := NewConnectionTest()
@@ -68,9 +46,6 @@ func TestFeedWorkerRepository_Find(t *testing.T) {
 		require.NotNil(t, result.InsertedID)
 	}
 
-	{
-		_, err = feedWorkerRepository.Find(context.Background(), id)
-		require.NoError(t, err)
-	}
-
+	_, err = feedWorkerRepository.Find(context.Background(), id)
+	require.NoError(t, err)
 }

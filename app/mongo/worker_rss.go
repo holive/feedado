@@ -15,7 +15,7 @@ type RssWorkerRepository struct {
 func (rr *RssWorkerRepository) Create(ctx context.Context, feeds []*rss.RSS) error {
 	var fs []interface{}
 	for _, f := range feeds {
-		fs = append(fs, &f)
+		fs = append(fs, f)
 	}
 
 	_, err := rr.collection.InsertMany(ctx, fs)
