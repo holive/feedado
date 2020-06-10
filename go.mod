@@ -8,6 +8,7 @@ require (
 	github.com/go-chi/chi v4.1.1+incompatible
 	github.com/holive/gopkg v0.0.0-20200507025338-8ab3c86c2041
 	github.com/json-iterator/go v1.1.9 // indirect
+	github.com/magiconair/properties v1.8.1
 	github.com/mitchellh/mapstructure v1.3.1 // indirect
 	github.com/pelletier/go-toml v1.8.0 // indirect
 	github.com/pkg/errors v0.9.1
