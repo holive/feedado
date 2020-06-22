@@ -4,14 +4,14 @@
     "sections": [
         {
             "parent_block_class": ".row.management",
-            "each_block_class": "secttion",
+            "each_block_class": "section",
             "title": ".text-wrapper h3",
             "subtitle": ".text-wrapper p",
             "url": ".text-wrapper"
         },
         {
             "parent_block_class": "#ultimas .lista",
-            "each_block_class": "secttion",
+            "each_block_class": "section",
             "title": ".third",
             "subtitle": "p",
             "url": ".link-title"

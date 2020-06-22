@@ -3,6 +3,8 @@ module github.com/holive/feedado
 go 1.13
 
 require (
+	github.com/PuerkitoBio/goquery v1.5.1
+	github.com/andybalholm/cascadia v1.2.0 // indirect
 	github.com/aws/aws-sdk-go v1.31.13
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
 	github.com/go-chi/chi v4.1.1+incompatible

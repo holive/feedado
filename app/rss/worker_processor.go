@@ -4,6 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
+	"net/http"
+	"strings"
+
+	"github.com/PuerkitoBio/goquery"
 
 	"github.com/holive/feedado/app/feed"
 
@@ -26,7 +31,7 @@ type ProcessorConfig struct {
 	UserAgent string
 }
 
-func (w *Processor) Process(ctx context.Context, message []byte) error {
+func (p *Processor) Process(ctx context.Context, message []byte) error {
 	fmt.Println("Process number :" + string(message))
 	var m struct {
 		SchemaID string `json:"schema_id"`
@@ -36,25 +41,56 @@ func (w *Processor) Process(ctx context.Context, message []byte) error {
 		return errors.Wrap(err, "could not unmarshal message")
 	}
 
-	schema, err := w.schemaGetter.Find(ctx, m.SchemaID)
+	schema, err := p.schemaGetter.Find(ctx, m.SchemaID)
 	if err != nil {
 		return errors.Wrap(err, "could not find schema")
 	}
 
-	rssResults, err := fetchRssResults(schema)
+	rssResults, err := p.fetchRssResults(schema)
 	if err != nil {
 		return errors.Wrap(err, "could not unmarshal message")
 	}
 
-	err = w.updater.Create(ctx, rssResults)
+	err = p.updater.Create(ctx, rssResults)
 
 	return nil
 }
 
-func fetchRssResults(schema *feed.Feed) ([]*RSS, error) {
-	_ = schema
+func (p *Processor) fetchRssResults(schema *feed.Feed) ([]*RSS, error) {
+	req, err := http.NewRequest("GET", schema.Source, nil)
+	if err != nil {
+		return nil, err
+	}
 
-	panic("implement me")
+	res, err := p.runner.Do(req)
+	if err != nil {
+		return nil, errors.Wrap(err, "could not fetch "+schema.Source)
+	}
+	defer res.Body.Close()
+	if res.StatusCode != 200 {
+		return nil, errors.Wrapf(err, "status code error: %d %s", res.StatusCode, res.Status)
+	}
+
+	// Load the HTML document
+	doc, err := goquery.NewDocumentFromReader(res.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Find the review items
+	selector := strings.Trim(schema.Sections[0].ParentBlockClass+" "+schema.Sections[0].EachBlockClass, " ")
+
+	var title, subtitle string
+	doc.Find(selector).Each(func(i int, s *goquery.Selection) {
+		title = s.Find(schema.Sections[0].Title).Text()
+		subtitle = s.Find(schema.Sections[0].Subtitle).Text()
+		fmt.Printf("title subtitle %d: %s - %s\n", i, title, subtitle)
+	})
+
+	//body, err := ioutil.ReadAll(res.Body)
+	//fmt.Println(string(body))
+
+	return nil, nil
 }
 
 func NewProcessor(updater Updater,
