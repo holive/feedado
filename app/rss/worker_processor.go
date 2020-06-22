@@ -3,6 +3,7 @@ package rss
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 
 	"github.com/holive/feedado/app/feed"
 
@@ -26,20 +27,16 @@ type ProcessorConfig struct {
 }
 
 func (w *Processor) Process(ctx context.Context, message []byte) error {
+	fmt.Println("Process number :" + string(message))
 	var m struct {
-		ID string `json:"_id"`
+		SchemaID string `json:"schema_id"`
 	}
 
 	if err := json.Unmarshal(message, &m); err != nil {
 		return errors.Wrap(err, "could not unmarshal message")
 	}
 
-	//id, err := primitive.ObjectIDFromHex(m["_id"])
-	//if err != nil {
-	//	return err
-	//}
-
-	schema, err := w.schemaGetter.Find(ctx, m.ID)
+	schema, err := w.schemaGetter.Find(ctx, m.SchemaID)
 	if err != nil {
 		return errors.Wrap(err, "could not find schema")
 	}
@@ -55,6 +52,8 @@ func (w *Processor) Process(ctx context.Context, message []byte) error {
 }
 
 func fetchRssResults(schema *feed.Feed) ([]*RSS, error) {
+	_ = schema
+
 	panic("implement me")
 }
 

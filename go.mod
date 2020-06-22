@@ -3,12 +3,10 @@ module github.com/holive/feedado
 go 1.13
 
 require (
-	github.com/aws/aws-sdk-go v1.31.8
+	github.com/aws/aws-sdk-go v1.31.13
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
 	github.com/go-chi/chi v4.1.1+incompatible
 	github.com/holive/gopkg v0.0.0-20200507025338-8ab3c86c2041
-	github.com/json-iterator/go v1.1.9 // indirect
-	github.com/magiconair/properties v1.8.1
 	github.com/mitchellh/mapstructure v1.3.1 // indirect
 	github.com/pelletier/go-toml v1.8.0 // indirect
 	github.com/pkg/errors v0.9.1
@@ -20,8 +18,7 @@ require (
 	github.com/stretchr/testify v1.5.1
 	go.mongodb.org/mongo-driver v1.3.3
 	go.uber.org/zap v1.15.0
-	gocloud.dev v0.19.0
+	gocloud.dev v0.20.0
 	golang.org/x/sync v0.0.0-20200317015054-43a5402ce75a
-	golang.org/x/sys v0.0.0-20200523222454-059865788121 // indirect
 	gopkg.in/ini.v1 v1.57.0 // indirect
 )

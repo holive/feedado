@@ -6,9 +6,9 @@ import (
 )
 
 func initGoCloudRSSPublisher(cfg *config.Config) (*gocloud.RSSPublisher, error) {
-	return gocloud.NewOfferPublisher(cfg.RSSPubSub)
+	return gocloud.NewRssPublisher(cfg.RSSPubSub)
 }
 
 func initGoCloudOfferReceiver(cfg *config.Config) (*gocloud.RSSReceiver, error) {
-	return gocloud.NewOfferReceiver(cfg.RSSPubSub)
+	return gocloud.NewRssReceiver(cfg.RSSPubSub)
 }

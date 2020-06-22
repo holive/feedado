@@ -29,7 +29,7 @@ func (op *RSSPublisher) Publish(ctx context.Context, r rss.RSS) error {
 	return op.client.Publish(ctx, rawMessage)
 }
 
-func NewOfferPublisher(cfg *RSSPubSubCfg) (*RSSPublisher, error) {
+func NewRssPublisher(cfg *RSSPubSubCfg) (*RSSPublisher, error) {
 	client, err := NewClient(
 		SetResourceName(cfg.Name),
 		SetService(cfg.Service),
@@ -50,7 +50,7 @@ func (or *RSSReceiver) Receive(ctx context.Context) (*pubsub.Message, error) {
 	return or.client.Receive(ctx)
 }
 
-func NewOfferReceiver(cfg *RSSPubSubCfg) (*RSSReceiver, error) {
+func NewRssReceiver(cfg *RSSPubSubCfg) (*RSSReceiver, error) {
 	client, err := NewClient(
 		SetResourceName(cfg.Name),
 		SetService(cfg.Service),

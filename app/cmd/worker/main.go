@@ -18,7 +18,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	err = worker.Worker.Start(context.Background())
+	worker.Worker.Start(context.Background())
 
 	server, err := http.NewWorkerServer(&http.ServerConfig{
 		Addr:              worker.Cfg.HTTPServer.Addr,

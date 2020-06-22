@@ -6,11 +6,11 @@ import (
 	"sync"
 	"time"
 
+	"github.com/pkg/errors"
+
 	"go.uber.org/zap"
 
-	"github.com/pkg/errors"
 	"gocloud.dev/pubsub"
-	"golang.org/x/sync/errgroup"
 )
 
 // Processor process a single message.
@@ -44,11 +44,10 @@ type Options struct {
 }
 
 // Start receiving messages.
-func (m *Worker) Start(ctx context.Context) error {
-	g, ctx := errgroup.WithContext(ctx)
-
+func (m *Worker) Start(ctx context.Context) {
 	for i := 0; i < m.concurrency; i++ {
-		g.Go(func() error {
+		go func(ctx context.Context, i int) {
+			m.logger.Info("Starting", "name", m.name, "number", i)
 			for {
 				m.Lock()
 				if m.exit == true {
@@ -58,22 +57,22 @@ func (m *Worker) Start(ctx context.Context) error {
 				m.Unlock()
 
 				if err := m.receive(ctx); err != nil {
-					// level.Error(m.logger).Log(
-					// 	"error", err,
-					// 	"name", m.name,
-					// )
-					return err
+					m.logger.Errorw("Worker receive error",
+						"error", err.Error(),
+						"name", m.name,
+					)
+
+					// TODO: remove this break to release the worker
+					break
 				}
 
 				if err := ctx.Err(); err != nil {
-					return err
+					m.logger.Info("Exiting", "name", m.name, "number", i)
+					break
 				}
 			}
-
-			return nil
-		})
+		}(ctx, i)
 	}
-	return g.Wait()
 }
 
 func (m *Worker) shutdown() error {
@@ -99,14 +98,14 @@ func (m *Worker) receive(ctx context.Context) error {
 		ctx, _ = context.WithTimeout(ctx, m.receiveTimeout)
 	}
 
-	message, err := m.receiver.Receive(ctx)
-
+	//message, err := m.receiver.Receive(ctx)
+	message, err := m.testReceiver(ctx) // TODO: remove test
 	if err != nil {
 		if err.Error() == "context deadline exceeded" {
 			return m.shutdown()
 		}
 
-		return errors.Wrap(err, "message receive")
+		return errors.Wrap(err, "at message receive method")
 	}
 
 	err = m.processor.Process(ctx, message.Body)

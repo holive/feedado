@@ -204,6 +204,6 @@ func TestFeedRepository_FindAll(t *testing.T) {
 	result, err := feedRepository.FindAll(context.Background(), "", "")
 	require.NoError(t, err)
 
-	assert.Equal(t, len(result.Feeds), 2)
+	assert.Equal(t, 2, len(result.Feeds))
 	assert.True(t, result.Feeds[0].Description == "1234" || result.Feeds[0].Description == "asdf")
 }

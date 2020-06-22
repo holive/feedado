@@ -1,5 +1,5 @@
 __worker
 __api
-/.idea
+.idea
 app/cmd/worker/main
 app/cmd/api/main
