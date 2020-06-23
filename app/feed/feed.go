@@ -7,11 +7,10 @@ type Feed struct {
 }
 
 type Section struct {
-	ParentBlockClass string `json:"parent_block_class,omitempty" bson:"parent_block_class"`
-	EachBlockClass   string `json:"each_block_class,omitempty" bson:"each_block_class"`
-	Title            string `json:"title,omitempty" bson:"title"`
-	Subtitle         string `json:"subtitle,omitempty" bson:"subtitle"`
-	Url              string `json:"url,omitempty" bson:"url"`
+	SectionSelector  string `json:"section_selector" bson:"section_selector"`
+	TitleSelector    string `json:"title_selector,omitempty" bson:"title_selector"`
+	SubtitleSelector string `json:"subtitle_selector,omitempty" bson:"subtitle_selector"`
+	UrlSelector      string `json:"url_selector,omitempty" bson:"url_selector"`
 }
 
 type SearchResult struct {

@@ -1,3 +1,7 @@
+# github.com/PuerkitoBio/goquery v1.5.1
+github.com/PuerkitoBio/goquery
+# github.com/andybalholm/cascadia v1.2.0
+github.com/andybalholm/cascadia
 # github.com/aws/aws-sdk-go v1.31.13
 github.com/aws/aws-sdk-go/aws
 github.com/aws/aws-sdk-go/aws/awserr
@@ -201,6 +205,8 @@ gocloud.dev/pubsub/driver
 # golang.org/x/crypto v0.0.0-20191206172530-e9b2fee46413
 golang.org/x/crypto/pbkdf2
 # golang.org/x/net v0.0.0-20200602114024-627f9648deb9
+golang.org/x/net/html
+golang.org/x/net/html/atom
 golang.org/x/net/http/httpguts
 golang.org/x/net/http2
 golang.org/x/net/http2/hpack

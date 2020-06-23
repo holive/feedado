@@ -21,6 +21,6 @@ require (
 	go.mongodb.org/mongo-driver v1.3.3
 	go.uber.org/zap v1.15.0
 	gocloud.dev v0.20.0
-	golang.org/x/sync v0.0.0-20200317015054-43a5402ce75a
+	golang.org/x/sync v0.0.0-20200317015054-43a5402ce75a // indirect
 	gopkg.in/ini.v1 v1.57.0 // indirect
 )

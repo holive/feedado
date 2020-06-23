@@ -26,11 +26,10 @@ func TestFeedRepository_Create(t *testing.T) {
 		Description: "1234",
 		Sections: []feed.Section{
 			{
-				ParentBlockClass: "qwer",
-				EachBlockClass:   "sdfg",
-				Title:            "xcvb",
-				Subtitle:         "erty",
-				Url:              "rtyu",
+				SectionSelector:  "sdfg",
+				TitleSelector:    "xcvb",
+				SubtitleSelector: "erty",
+				UrlSelector:      "rtyu",
 			},
 		},
 	}
@@ -80,11 +79,10 @@ func TestFeedRepository_Update(t *testing.T) {
 		Description: "1234",
 		Sections: []feed.Section{
 			{
-				ParentBlockClass: "qwer",
-				EachBlockClass:   "sdfg",
-				Title:            "xcvb",
-				Subtitle:         "erty",
-				Url:              "rtyu",
+				SectionSelector:  "sdfg",
+				TitleSelector:    "xcvb",
+				SubtitleSelector: "erty",
+				UrlSelector:      "rtyu",
 			},
 		},
 	}

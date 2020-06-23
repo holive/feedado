@@ -6,17 +6,13 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"strings"
+	"time"
 
 	"github.com/PuerkitoBio/goquery"
-
 	"github.com/holive/feedado/app/feed"
-
-	"go.uber.org/zap"
-
 	infraHTTP "github.com/holive/gopkg/net/http"
-
 	"github.com/pkg/errors"
+	"go.uber.org/zap"
 )
 
 type Processor struct {
@@ -46,9 +42,14 @@ func (p *Processor) Process(ctx context.Context, message []byte) error {
 		return errors.Wrap(err, "could not find schema")
 	}
 
-	rssResults, err := p.fetchRssResults(schema)
+	httpResp, err := p.fetchSourcePage(schema)
 	if err != nil {
 		return errors.Wrap(err, "could not unmarshal message")
+	}
+
+	rssResults, err := p.sourceResponseToRSS(httpResp, schema)
+	if err != nil {
+		return errors.Wrap(err, "could not parse http response to rss array")
 	}
 
 	err = p.updater.Create(ctx, rssResults)
@@ -56,41 +57,56 @@ func (p *Processor) Process(ctx context.Context, message []byte) error {
 	return nil
 }
 
-func (p *Processor) fetchRssResults(schema *feed.Feed) ([]*RSS, error) {
+func (p *Processor) fetchSourcePage(schema *feed.Feed) (*http.Response, error) {
 	req, err := http.NewRequest("GET", schema.Source, nil)
 	if err != nil {
-		return nil, err
+		return &http.Response{}, err
 	}
 
-	res, err := p.runner.Do(req)
+	response, err := p.runner.Do(req)
 	if err != nil {
-		return nil, errors.Wrap(err, "could not fetch "+schema.Source)
+		return &http.Response{}, errors.Wrap(err, "could not fetch "+schema.Source)
 	}
-	defer res.Body.Close()
-	if res.StatusCode != 200 {
-		return nil, errors.Wrapf(err, "status code error: %d %s", res.StatusCode, res.Status)
+	defer response.Body.Close()
+	if response.StatusCode != 200 {
+		return &http.Response{}, errors.Wrapf(err, "status code error: %d %s", response.StatusCode, response.Status)
 	}
 
-	// Load the HTML document
-	doc, err := goquery.NewDocumentFromReader(res.Body)
+	return response, nil
+}
+
+func (p *Processor) sourceResponseToRSS(response *http.Response, schema *feed.Feed) ([]*RSS, error) {
+	doc, err := goquery.NewDocumentFromReader(response.Body)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	// Find the review items
-	selector := strings.Trim(schema.Sections[0].ParentBlockClass+" "+schema.Sections[0].EachBlockClass, " ")
+	rsss := make(map[string]RSS)
+	for _, section := range schema.Sections {
+		doc.Find(section.SectionSelector).Each(func(i int, s *goquery.Selection) {
+			rss := RSS{
+				Source:    schema.Source,
+				Title:     s.Find(section.TitleSelector).Text(),
+				Subtitle:  s.Find(section.SubtitleSelector).Text(),
+				URL:       s.Find(section.UrlSelector).AttrOr("href", ""),
+				Timestamp: time.Now().Unix(),
+			}
 
-	var title, subtitle string
-	doc.Find(selector).Each(func(i int, s *goquery.Selection) {
-		title = s.Find(schema.Sections[0].Title).Text()
-		subtitle = s.Find(schema.Sections[0].Subtitle).Text()
-		fmt.Printf("title subtitle %d: %s - %s\n", i, title, subtitle)
-	})
+			if rss.URL == "" {
+				p.logger.Debugf("could not find %s at position %d", schema.Source, i)
+				return
+			}
 
-	//body, err := ioutil.ReadAll(res.Body)
-	//fmt.Println(string(body))
+			rsss[rss.URL] = rss
+		})
+	}
 
-	return nil, nil
+	var result []*RSS
+	for _, rss := range rsss {
+		result = append(result, &rss)
+	}
+
+	return result, nil
 }
 
 func NewProcessor(updater Updater,
