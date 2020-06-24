@@ -6,13 +6,10 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
-
-	infraHTTP "github.com/holive/gopkg/net/http"
 )
 
 type Service struct {
-	repo       Repository
-	httpRunner infraHTTP.Runner
+	repo Repository
 }
 
 func (s *Service) Create(ctx context.Context, feed *Feed) (*Feed, error) {
@@ -64,9 +61,8 @@ func (s *Service) validateURL(source string) error {
 	return nil
 }
 
-func NewService(repository Repository, client infraHTTP.Runner) *Service {
+func NewService(repository Repository) *Service {
 	return &Service{
-		repo:       repository,
-		httpRunner: client,
+		repo: repository,
 	}
 }

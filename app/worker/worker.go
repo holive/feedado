@@ -59,9 +59,6 @@ func (m *Worker) Start(ctx context.Context) {
 						"error", err.Error(),
 						"name", m.name,
 					)
-
-					//// TODO: remove this break to release the worker
-					//break
 				}
 
 				if err := ctx.Err(); err != nil {
@@ -97,7 +94,6 @@ func (m *Worker) receive(ctx context.Context) error {
 	}
 
 	message, err := m.receiver.Receive(ctx)
-	//message, err := m.testReceiver(ctx) // TODO: remove test
 	if err != nil {
 		if err.Error() == "context deadline exceeded" {
 			return m.shutdown()

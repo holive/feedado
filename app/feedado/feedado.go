@@ -54,7 +54,7 @@ func New() (*Feedado, error) {
 }
 
 func initServices(cfg *config.Config, db *mongo.Client, client infraHTTP.Runner, logger *zap.SugaredLogger) *Services {
-	feedService := initFeedService(db, client)
+	feedService := initFeedService(db)
 	userService := initUserService(db)
 	rssService := initRssService(db, client)
 

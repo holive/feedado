@@ -1,9 +1,10 @@
 package rss
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
-	"log"
+	"io/ioutil"
 	"net/http"
 	"time"
 
@@ -27,59 +28,63 @@ type ProcessorConfig struct {
 }
 
 func (p *Processor) Process(ctx context.Context, message []byte) error {
-	var m struct {
-		SchemaID string `json:"schema_id"`
-	}
+	var m feed.FeedSQS
 
 	if err := json.Unmarshal(message, &m); err != nil {
 		return errors.Wrap(err, "could not unmarshal message")
 	}
 
-	schema, err := p.schemaGetter.Find(ctx, m.SchemaID)
+	schema, err := p.schemaGetter.Find(ctx, m.ID)
 	if err != nil {
 		return errors.Wrap(err, "could not find schema")
 	}
 
-	httpResp, err := p.fetchSourcePage(schema)
+	doc, err := p.fetchSourcePage(schema)
 	if err != nil {
 		return errors.Wrap(err, "could not unmarshal message")
 	}
 
-	rssResults, err := p.sourceResponseToRSS(httpResp, schema)
+	rssResults, err := p.sourceResponseToRSS(doc, schema)
 	if err != nil {
-		return errors.Wrap(err, "could not parse http response to rss array")
+		return errors.Wrap(err, "could not parse html page to rss")
 	}
 
 	err = p.updater.Create(ctx, rssResults)
+	if err != nil {
+		return errors.Wrapf(err, "could not insert batch of %s", schema.Source)
+	}
+
+	p.logger.Info("finishing batch of source: ", schema.Source)
 
 	return nil
 }
 
-func (p *Processor) fetchSourcePage(schema *feed.Feed) (*http.Response, error) {
+func (p *Processor) fetchSourcePage(schema *feed.Feed) ([]byte, error) {
 	req, err := http.NewRequest("GET", schema.Source, nil)
 	if err != nil {
-		return &http.Response{}, err
+		return nil, err
 	}
 
 	response, err := p.runner.Do(req)
 	if err != nil {
-		return &http.Response{}, errors.Wrap(err, "could not fetch "+schema.Source)
+		return nil, errors.Wrap(err, "could not fetch "+schema.Source)
 	}
 	defer response.Body.Close()
 	if response.StatusCode != 200 {
-		return &http.Response{}, errors.Wrapf(err, "status code error: %d %s", response.StatusCode, response.Status)
+		return nil, errors.Wrapf(err, "status code error: %d %s", response.StatusCode, response.Status)
 	}
 
-	return response, nil
+	return ioutil.ReadAll(response.Body)
 }
 
-func (p *Processor) sourceResponseToRSS(response *http.Response, schema *feed.Feed) ([]*RSS, error) {
-	doc, err := goquery.NewDocumentFromReader(response.Body)
+func (p *Processor) sourceResponseToRSS(htmlPage []byte, schema *feed.Feed) ([]*RSS, error) {
+	doc, err := goquery.NewDocumentFromReader(bytes.NewReader(htmlPage))
 	if err != nil {
-		log.Fatal(err)
+		p.logger.Errorf("could not find %s", schema.Source)
 	}
 
 	rsss := make(map[string]RSS)
+
 	for _, section := range schema.Sections {
 		doc.Find(section.SectionSelector).Each(func(i int, s *goquery.Selection) {
 			rss := RSS{
@@ -90,17 +95,17 @@ func (p *Processor) sourceResponseToRSS(response *http.Response, schema *feed.Fe
 				Timestamp: time.Now().Unix(),
 			}
 
-			if rss.URL == "" {
-				p.logger.Debugf("could not find %s at position %d", schema.Source, i)
+			if rss.Title == "" || rss.Source == "" {
 				return
 			}
 
-			rsss[rss.URL] = rss
+			rsss[rss.Title] = rss
 		})
 	}
 
 	var result []*RSS
 	for _, rss := range rsss {
+		rss := rss
 		result = append(result, &rss)
 	}
 

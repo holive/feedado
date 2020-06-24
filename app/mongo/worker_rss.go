@@ -5,7 +5,9 @@ import (
 
 	"github.com/holive/feedado/app/rss"
 	"github.com/pkg/errors"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type RssWorkerRepository struct {
@@ -13,14 +15,20 @@ type RssWorkerRepository struct {
 }
 
 func (rr *RssWorkerRepository) Create(ctx context.Context, feeds []*rss.RSS) error {
-	var fs []interface{}
-	for _, f := range feeds {
-		fs = append(fs, f)
-	}
+	opts := options.Replace().SetUpsert(true)
 
-	_, err := rr.collection.InsertMany(ctx, fs)
-	if err != nil {
-		return errors.Wrap(err, "could not create rss feeds")
+	for _, f := range feeds {
+		update, err := bson.Marshal(f)
+		if err != nil {
+			return errors.Wrap(err, "could not marshal bson")
+		}
+
+		filter := bson.M{"source": bson.M{"$eq": f.URL}}
+
+		_, err = rr.collection.ReplaceOne(ctx, filter, update, opts)
+		if err != nil {
+			return errors.Wrap(err, "could not insert / update rss")
+		}
 	}
 
 	return nil
