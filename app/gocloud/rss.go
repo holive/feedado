@@ -4,7 +4,8 @@ import (
 	"context"
 	"encoding/json"
 
-	"github.com/holive/feedado/app/rss"
+	"github.com/holive/feedado/app/feed"
+
 	"github.com/pkg/errors"
 
 	"gocloud.dev/pubsub"
@@ -20,8 +21,8 @@ type RSSPublisher struct {
 	client *Client
 }
 
-func (op *RSSPublisher) Publish(ctx context.Context, r rss.RSS) error {
-	rawMessage, err := json.Marshal(r)
+func (op *RSSPublisher) Publish(ctx context.Context, feedId feed.FeedSQS) error {
+	rawMessage, err := json.Marshal(feedId)
 	if err != nil {
 		return errors.Wrap(err, "Cloud not encode update message")
 	}

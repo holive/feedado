@@ -33,11 +33,10 @@ func TestFeedWorkerRepository_Find(t *testing.T) {
 				{"description", ""},
 				{"sections", bson.A{
 					bson.D{
-						{"parent_block_class", ""},
-						{"each_block_class", ""},
-						{"title", ""},
-						{"subtitle", ""},
-						{"url", ""},
+						{"section_selector", ""},
+						{"title_selector", ""},
+						{"subtitle_selector", ""},
+						{"url_selector", ""},
 					},
 				}},
 			})

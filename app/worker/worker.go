@@ -7,9 +7,7 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
-
 	"go.uber.org/zap"
-
 	"gocloud.dev/pubsub"
 )
 
@@ -62,8 +60,8 @@ func (m *Worker) Start(ctx context.Context) {
 						"name", m.name,
 					)
 
-					// TODO: remove this break to release the worker
-					break
+					//// TODO: remove this break to release the worker
+					//break
 				}
 
 				if err := ctx.Err(); err != nil {
@@ -98,13 +96,12 @@ func (m *Worker) receive(ctx context.Context) error {
 		ctx, _ = context.WithTimeout(ctx, m.receiveTimeout)
 	}
 
-	//message, err := m.receiver.Receive(ctx)
-	message, err := m.testReceiver(ctx) // TODO: remove test
+	message, err := m.receiver.Receive(ctx)
+	//message, err := m.testReceiver(ctx) // TODO: remove test
 	if err != nil {
 		if err.Error() == "context deadline exceeded" {
 			return m.shutdown()
 		}
-
 		return errors.Wrap(err, "at message receive method")
 	}
 

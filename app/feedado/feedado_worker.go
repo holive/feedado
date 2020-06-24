@@ -4,7 +4,6 @@ import (
 	"github.com/holive/feedado/app/config"
 	"github.com/holive/feedado/app/rss"
 	"github.com/holive/feedado/app/worker"
-	infraHTTP "github.com/holive/gopkg/net/http"
 	"github.com/pkg/errors"
 )
 
@@ -12,7 +11,6 @@ type Worker struct {
 	Cfg      *config.Config
 	Services *WorkerServices
 	Worker   *worker.Worker
-	runner   infraHTTP.Runner
 }
 
 type WorkerServices struct {
@@ -35,7 +33,7 @@ func NewWorker() (*Worker, error) {
 		return nil, errors.Wrap(err, "could not initialize mongo client")
 	}
 
-	w.runner, err = initHTTPClient(w.Cfg)
+	httpRunner, err := initHTTPClient(w.Cfg)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not initialize http client")
 	}
@@ -50,20 +48,17 @@ func NewWorker() (*Worker, error) {
 		return nil, errors.Wrap(err, "could not initialize worker rss receiver")
 	}
 
-	w.Services = w.initWorkerServices()
+	publisher, err := initGoCloudRSSPublisher(w.Cfg)
+	if err != nil {
+		return nil, errors.Wrap(err, "could not initialize worker rss publisher")
+	}
 
-	err = w.initRssWorker(logger, db, receiver)
+	w.Services = initRssWorkerService(db, logger, publisher)
+
+	err = w.initRssWorker(logger, db, receiver, httpRunner)
 	if err != nil {
 		return nil, err
 	}
 
 	return w, nil
-}
-
-func (w *Worker) initWorkerServices() *WorkerServices {
-	rssService := initRssWorkerService(w.runner)
-
-	return &WorkerServices{
-		RSS: rssService,
-	}
 }

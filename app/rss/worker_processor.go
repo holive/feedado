@@ -3,7 +3,6 @@ package rss
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -28,7 +27,6 @@ type ProcessorConfig struct {
 }
 
 func (p *Processor) Process(ctx context.Context, message []byte) error {
-	fmt.Println("Process number :" + string(message))
 	var m struct {
 		SchemaID string `json:"schema_id"`
 	}

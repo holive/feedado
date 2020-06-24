@@ -13,3 +13,7 @@ type Updater interface {
 type SchemaGetter interface {
 	Find(ctx context.Context, id string) (*feed.Feed, error)
 }
+
+type WorkerRepository interface {
+	FindAll(ctx context.Context, limit string, offset string) (*feed.SearchResult, error)
+}

@@ -42,6 +42,7 @@ func TestProcessor_fetchRssResults(t *testing.T) {
 	req, err := http.NewRequest(http.MethodGet, testServer.URL, nil)
 	assert.NoError(t, err)
 	res, err := http.DefaultClient.Do(req)
+	assert.NoError(t, err)
 
 	logger := initLoggerTest()
 	updater := UpdaterTest{}

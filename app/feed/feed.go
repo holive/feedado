@@ -1,9 +1,14 @@
 package feed
 
+import (
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
+
 type Feed struct {
-	Source      string    `json:"source" bson:"source"`
-	Description string    `json:"description,omitempty" bson:"description"`
-	Sections    []Section `json:"sections,omitempty,"bson:"sections"`
+	Id          primitive.ObjectID `bson:"_id,omitempty"`
+	Source      string             `json:"source" bson:"source"`
+	Description string             `json:"description,omitempty" bson:"description"`
+	Sections    []Section          `json:"sections,omitempty,"bson:"sections"`
 }
 
 type Section struct {
@@ -20,4 +25,8 @@ type SearchResult struct {
 		Limit  int64 `json:"limit"`
 		Total  int64 `json:"total"`
 	} `json:"_result"`
+}
+
+type FeedSQS struct {
+	ID string `json:"_id"`
 }

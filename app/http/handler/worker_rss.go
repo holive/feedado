@@ -4,8 +4,14 @@ import (
 	"net/http"
 )
 
-func (h *WorkerHandler) RSS(w http.ResponseWriter, r *http.Request) {
+// RSS - triggers the scroll and fetch of all schemas
+func (wh *WorkerHandler) RSS(w http.ResponseWriter, r *http.Request) {
+	err := wh.Services.RSS.FindAll(r.Context())
+	if err != nil {
+		respondWithJSONError(w, http.StatusInternalServerError, err)
+		return
+	}
 
-	panic("implement me")
+	respondWithJSON(w, http.StatusOK, nil)
 	return
 }
