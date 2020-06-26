@@ -14,6 +14,7 @@ Mongo:
   URI: mongodb://localhost:27017
   Database: feedado
   Timeout: 5
+  RSSttl: 172800
 RSSPubSub:
   Name: feedado-worker-rss-dev
   Service: sqs

@@ -31,7 +31,7 @@ func initRssWorkerService(db *mongo.Client, logger *zap.SugaredLogger,
 func initRssProcessor(cfg *config.Config, logger *zap.SugaredLogger, runner infraHTTP.Runner,
 	db *mongo.Client) (*rss.Processor, error) {
 
-	updater := initMongoRssWorkerRepository(db)
+	updater := initMongoRssWorkerRepository(db, cfg, logger)
 	schemaGetter := mongo.NewFeedWorkerRepository(db)
 
 	return rss.NewProcessor(updater, cfg.RSSProcessor, runner, logger, schemaGetter)

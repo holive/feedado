@@ -1,11 +1,13 @@
 package rss
 
+import "time"
+
 type RSS struct {
-	Source    string `json:"source" bson:"source"`
-	Title     string `json:"title" bson:"title"`
-	Subtitle  string `json:"subtitle" bson:"subtitle"`
-	URL       string `json:"url" bson:"url"`
-	Timestamp int64  `json:"timestamp" bson:"timestamp"`
+	Source    string    `json:"source" bson:"source"`
+	Title     string    `json:"title" bson:"title"`
+	Subtitle  string    `json:"subtitle" bson:"subtitle"`
+	URL       string    `json:"url" bson:"url"`
+	Timestamp time.Time `json:"timestamp" bson:"timestamp"`
 }
 
 type SearchResult struct {

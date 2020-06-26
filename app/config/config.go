@@ -27,6 +27,7 @@ type DB struct {
 	URI      string
 	Database string
 	Timeout  time.Duration
+	RSSttl   int32
 }
 
 type Router struct {

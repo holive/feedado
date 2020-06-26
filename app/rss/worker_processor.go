@@ -92,7 +92,7 @@ func (p *Processor) sourceResponseToRSS(htmlPage []byte, schema *feed.Feed) ([]*
 				Title:     s.Find(section.TitleSelector).Text(),
 				Subtitle:  s.Find(section.SubtitleSelector).Text(),
 				URL:       s.Find(section.UrlSelector).AttrOr("href", ""),
-				Timestamp: time.Now().Unix(),
+				Timestamp: time.Now(),
 			}
 
 			if rss.Title == "" || rss.Source == "" {

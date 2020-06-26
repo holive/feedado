@@ -3,6 +3,7 @@ package feedado
 import (
 	"github.com/holive/feedado/app/config"
 	"github.com/holive/feedado/app/mongo"
+	"go.uber.org/zap"
 )
 
 func initMongoClient(cfg *config.Config) (*mongo.Client, error) {
@@ -25,6 +26,6 @@ func initMongoRssRepository(client *mongo.Client) *mongo.RSSRepository {
 	return mongo.NewRssRepository(client)
 }
 
-func initMongoRssWorkerRepository(client *mongo.Client) *mongo.RssWorkerRepository {
-	return mongo.NewRssWorkerRepository(client)
+func initMongoRssWorkerRepository(client *mongo.Client, cfg *config.Config, logger *zap.SugaredLogger) *mongo.RssWorkerRepository {
+	return mongo.NewRssWorkerRepository(client, cfg, logger)
 }
