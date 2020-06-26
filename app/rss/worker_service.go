@@ -49,8 +49,7 @@ func (ws *WorkerService) scrollFeeds(ctx context.Context, result chan feed.Feed)
 	var offset = 0
 
 	for {
-		asdf := strconv.Itoa(limit)
-		res, err := ws.repo.FindAll(ctx, asdf, strconv.Itoa(offset))
+		res, err := ws.repo.FindAll(ctx, strconv.Itoa(limit), strconv.Itoa(offset))
 		if err != nil {
 			return errors.Wrap(err, "could not get total schemas")
 		}
@@ -64,7 +63,7 @@ func (ws *WorkerService) scrollFeeds(ctx context.Context, result chan feed.Feed)
 		}
 
 		if len(res.Feeds) < limit {
-			ws.logger.Info("finishing scroll")
+			ws.logger.Debug("finishing scroll. length: ", len(res.Feeds))
 			break
 		}
 
@@ -76,10 +75,14 @@ func (ws *WorkerService) scrollFeeds(ctx context.Context, result chan feed.Feed)
 
 func (ws *WorkerService) work(ctx context.Context, feeds <-chan feed.Feed) error {
 	for f := range feeds {
+		ws.logger.Debug("publishing ", f.Id)
+
 		err := ws.publisher.Publish(ctx, feed.FeedSQS{ID: f.Id.Hex()})
 		if err != nil {
 			return err
 		}
+
+		ws.logger.Debug("finish publishing ", f.Id)
 	}
 	return nil
 }

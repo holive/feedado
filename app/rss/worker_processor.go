@@ -54,7 +54,7 @@ func (p *Processor) Process(ctx context.Context, message []byte) error {
 		return errors.Wrapf(err, "could not insert batch of %s", schema.Source)
 	}
 
-	p.logger.Info("finishing batch of source: ", schema.Source)
+	p.logger.Debug("finishing batch of source: ", schema.Source)
 
 	return nil
 }

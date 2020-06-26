@@ -54,7 +54,7 @@ func (m *Worker) Start(ctx context.Context) {
 				}
 				m.Unlock()
 
-				if err := m.receive(ctx); err != nil {
+				if err := m.receive(ctx, m.logger); err != nil {
 					m.logger.Errorw("Worker receive error",
 						"error", err.Error(),
 						"name", m.name,
@@ -77,7 +77,9 @@ func (m *Worker) shutdown() error {
 	return nil
 }
 
-func (m *Worker) receive(ctx context.Context) error {
+func (m *Worker) receive(ctx context.Context, logger *zap.SugaredLogger) error {
+	logger.Debug("receive ready")
+
 	defer func() {
 		if err := recover(); err != nil {
 			m.logger.Errorw(
@@ -89,11 +91,13 @@ func (m *Worker) receive(ctx context.Context) error {
 		}
 	}()
 
-	if m.receiveTimeout > 0 {
-		ctx, _ = context.WithTimeout(ctx, m.receiveTimeout)
-	}
+	//if m.receiveTimeout > 0 {
+	//	ctx, _ = context.WithTimeout(ctx, m.receiveTimeout)
+	//}
 
 	message, err := m.receiver.Receive(ctx)
+	logger.Debug("message received")
+
 	if err != nil {
 		if err.Error() == "context deadline exceeded" {
 			return m.shutdown()

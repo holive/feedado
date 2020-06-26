@@ -3,16 +3,14 @@ package mongo
 import (
 	"context"
 
-	"go.uber.org/zap"
-
-	"go.mongodb.org/mongo-driver/x/bsonx"
-
 	"github.com/holive/feedado/app/config"
 	"github.com/holive/feedado/app/rss"
 	"github.com/pkg/errors"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/x/bsonx"
+	"go.uber.org/zap"
 )
 
 type RssWorkerRepository struct {
