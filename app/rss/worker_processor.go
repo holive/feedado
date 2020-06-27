@@ -17,7 +17,7 @@ import (
 
 type Processor struct {
 	updater      Updater
-	schemaGetter SchemaGetter
+	schemaGetter feed.SchemaGetter
 	userAgent    string
 	runner       infraHTTP.Runner
 	logger       *zap.SugaredLogger
@@ -116,7 +116,7 @@ func NewProcessor(updater Updater,
 	cfg *ProcessorConfig,
 	runner infraHTTP.Runner,
 	logger *zap.SugaredLogger,
-	schemaGetter SchemaGetter) (*Processor, error) {
+	schemaGetter feed.SchemaGetter) (*Processor, error) {
 
 	if updater == nil {
 		return nil, errors.New("updater can't be nil")

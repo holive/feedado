@@ -39,6 +39,11 @@ func NewRouter(cfg *RouterConfig, handler *handler.Handler) http.Handler {
 		r.Delete("/{email}", handler.DeleteUser)
 	})
 
+	r.Route("/rss", func(r chi.Router) {
+		r.Get("/", handler.GetAllRSS)
+		r.Delete("/{url}", handler.DeleteRSS)
+	})
+
 	return r
 }
 

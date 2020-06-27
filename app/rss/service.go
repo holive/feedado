@@ -11,8 +11,12 @@ type Service struct {
 	httpRunner infraHTTP.Runner
 }
 
-func (s *Service) Create(ctx context.Context, feed *RSS) (*RSS, error) {
-	panic("create me")
+func (s *Service) FindAll(ctx context.Context, limit string, offset string) (*SearchResult, error) {
+	return s.repo.FindAll(ctx, limit, offset)
+}
+
+func (s *Service) Delete(ctx context.Context, url string) error {
+	return s.repo.Delete(ctx, url)
 }
 
 func NewService(repository Repository, client infraHTTP.Runner) *Service {

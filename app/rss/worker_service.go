@@ -13,7 +13,7 @@ import (
 )
 
 type WorkerService struct {
-	repo      WorkerRepository
+	repo      feed.WorkerRepository
 	logger    *zap.SugaredLogger
 	publisher *gocloud.RSSPublisher
 }
@@ -114,7 +114,7 @@ func (ws *WorkerService) work(ctx context.Context, feeds <-chan feed.Feed) error
 	return nil
 }
 
-func NewWorkerService(repository WorkerRepository, logger *zap.SugaredLogger,
+func NewWorkerService(repository feed.WorkerRepository, logger *zap.SugaredLogger,
 	publisher *gocloud.RSSPublisher) *WorkerService {
 
 	return &WorkerService{
