@@ -19,14 +19,16 @@ type Section struct {
 }
 
 type SearchResult struct {
-	Feeds  []Feed `json:"feeds"`
-	Result struct {
-		Offset int64 `json:"offset"`
-		Limit  int64 `json:"limit"`
-		Total  int64 `json:"total"`
-	} `json:"_result"`
+	Feeds  []Feed             `json:"feeds"`
+	Result SearchResultResult `json:"_result"`
 }
 
-type FeedSQS struct {
+type SearchResultResult struct {
+	Offset int64 `json:"offset"`
+	Limit  int64 `json:"limit"`
+	Total  int64 `json:"total"`
+}
+
+type SQS struct {
 	ID string `json:"_id"`
 }

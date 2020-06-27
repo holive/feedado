@@ -21,7 +21,7 @@ type RSSPublisher struct {
 	client *Client
 }
 
-func (op *RSSPublisher) Publish(ctx context.Context, feedId feed.FeedSQS) error {
+func (op *RSSPublisher) Publish(ctx context.Context, feedId feed.SQS) error {
 	rawMessage, err := json.Marshal(feedId)
 	if err != nil {
 		return errors.Wrap(err, "Cloud not encode update message")

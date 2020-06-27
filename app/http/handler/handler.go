@@ -26,7 +26,7 @@ func (h *Handler) Health(w http.ResponseWriter, r *http.Request) {
 	health(w, r)
 }
 
-func (h *WorkerHandler) Health(w http.ResponseWriter, r *http.Request) {
+func (wh *WorkerHandler) Health(w http.ResponseWriter, r *http.Request) {
 	health(w, r)
 }
 

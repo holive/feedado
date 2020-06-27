@@ -18,7 +18,34 @@ type WorkerService struct {
 	publisher *gocloud.RSSPublisher
 }
 
-func (ws *WorkerService) FindAll(ctx context.Context) error {
+type ScrollRepoCallback func(ctx context.Context, limit string, offset string) (*feed.SearchResult, error)
+
+// FindAllFeeds calls feedScrollPub passing a repo function that returns all feeds
+func (ws *WorkerService) FindAllFeeds(ctx context.Context) error {
+	return ws.feedScrollPub(ctx, func(ctx context.Context, limit string, offset string) (*feed.SearchResult, error) {
+		return ws.repo.FindAll(ctx, limit, offset)
+	})
+}
+
+// FindFeedBySource calls feedScrollPub passing a repo function that returns a feeds with a specific source
+func (ws *WorkerService) FindFeedBySource(ctx context.Context, source string) error {
+	return ws.feedScrollPub(ctx, func(ctx context.Context, limit string, offset string) (*feed.SearchResult, error) {
+		f, err := ws.repo.FindBySource(ctx, source)
+		if err != nil {
+			return nil, errors.Wrapf(err, "could not find a document with source %s", source)
+		}
+
+		var fe feed.Feed = *f
+
+		return &feed.SearchResult{
+			Feeds:  append([]feed.Feed{}, fe),
+			Result: feed.SearchResultResult{},
+		}, nil
+	})
+}
+
+// feedScrollPub triggers the scroll and publish jobs
+func (ws *WorkerService) feedScrollPub(ctx context.Context, callback ScrollRepoCallback) error {
 	bufferSize := 5
 	g, ctx := errgroup.WithContext(ctx)
 	feeds := make(chan feed.Feed, bufferSize)
@@ -26,7 +53,7 @@ func (ws *WorkerService) FindAll(ctx context.Context) error {
 	g.Go(func(c context.Context) func() error {
 		return func() error {
 			defer close(feeds)
-			if err := ws.scrollFeeds(ctx, feeds); err != nil {
+			if err := ws.scrollFeeds(ctx, feeds, callback); err != nil {
 				ws.logger.Error(err)
 			}
 			return nil
@@ -44,12 +71,12 @@ func (ws *WorkerService) FindAll(ctx context.Context) error {
 	return nil
 }
 
-func (ws *WorkerService) scrollFeeds(ctx context.Context, result chan feed.Feed) error {
+func (ws *WorkerService) scrollFeeds(ctx context.Context, result chan feed.Feed, callback ScrollRepoCallback) error {
 	var limit = 30
 	var offset = 0
 
 	for {
-		res, err := ws.repo.FindAll(ctx, strconv.Itoa(limit), strconv.Itoa(offset))
+		res, err := callback(ctx, strconv.Itoa(limit), strconv.Itoa(offset))
 		if err != nil {
 			return errors.Wrap(err, "could not get total schemas")
 		}
@@ -77,7 +104,7 @@ func (ws *WorkerService) work(ctx context.Context, feeds <-chan feed.Feed) error
 	for f := range feeds {
 		ws.logger.Debug("publishing ", f.Id)
 
-		err := ws.publisher.Publish(ctx, feed.FeedSQS{ID: f.Id.Hex()})
+		err := ws.publisher.Publish(ctx, feed.SQS{ID: f.Id.Hex()})
 		if err != nil {
 			return err
 		}

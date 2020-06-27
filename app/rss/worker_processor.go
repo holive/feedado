@@ -28,7 +28,7 @@ type ProcessorConfig struct {
 }
 
 func (p *Processor) Process(ctx context.Context, message []byte) error {
-	var m feed.FeedSQS
+	var m feed.SQS
 
 	if err := json.Unmarshal(message, &m); err != nil {
 		return errors.Wrap(err, "could not unmarshal message")
