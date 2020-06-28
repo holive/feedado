@@ -1,0 +1,15 @@
+html {
+    height: 100%;
+}
+body {
+    min-height: 100%;
+    background-color: #1a1a1a;
+}
+
+.card {
+    background-color: #393939 !important;
+}
+
+.card span.card-title {
+    font-size: 19px;
+}

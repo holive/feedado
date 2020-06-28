@@ -8,6 +8,7 @@ type Feed struct {
 	Id          primitive.ObjectID `bson:"_id,omitempty"`
 	Source      string             `json:"source" bson:"source"`
 	Description string             `json:"description,omitempty" bson:"description"`
+	Category    string             `json:"category,omitempty" bson:"category"`
 	Sections    []Section          `json:"sections,omitempty,"bson:"sections"`
 }
 

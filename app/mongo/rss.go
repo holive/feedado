@@ -21,7 +21,7 @@ func (rr *RSSRepository) FindAll(ctx context.Context, limit string, offset strin
 		return &rss.SearchResult{}, errors.Wrap(err, "could not get limit or offset")
 	}
 
-	findOptions := options.Find().SetLimit(intLimit).SetSkip(intOffset)
+	findOptions := options.Find().SetLimit(intLimit).SetSkip(intOffset).SetSort(bson.D{{"timestamp", -1}})
 
 	cur, err := rr.collection.Find(ctx, bson.D{{}}, findOptions)
 	if err != nil {
