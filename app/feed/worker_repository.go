@@ -10,5 +10,5 @@ type SchemaGetter interface {
 
 type WorkerRepository interface {
 	FindAll(ctx context.Context, limit string, offset string) (*SearchResult, error)
-	FindBySource(ctx context.Context, source string) (*Feed, error)
+	FindByCategory(ctx context.Context, limit string, offset string, category string) (*SearchResult, error)
 }

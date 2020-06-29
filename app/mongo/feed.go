@@ -71,6 +71,43 @@ func (fr *FeedRepository) FindBySource(ctx context.Context, source string) (*fee
 	return &f, nil
 }
 
+func (fr *FeedRepository) FindByCategory(ctx context.Context, limit string, offset string,
+	category string) (*feed.SearchResult, error) {
+
+	intLimit, intOffset, err := fr.getLimitOffset(limit, offset)
+	if err != nil {
+		return &feed.SearchResult{}, errors.Wrap(err, "could not get limit or offset")
+	}
+
+	findOptions := options.Find().SetLimit(intLimit).SetSkip(intOffset)
+
+	filter := bson.M{"category": bson.M{"$eq": category}}
+
+	cur, err := fr.collection.Find(ctx, filter, findOptions)
+	if err != nil {
+		return &feed.SearchResult{}, err
+	}
+
+	total, err := fr.collection.CountDocuments(ctx, bson.D{{}})
+	if err != nil {
+		return nil, errors.Wrap(err, "could not count documents")
+	}
+
+	results, err := fr.resultFromCursor(ctx, cur)
+	if err != nil {
+		return &feed.SearchResult{}, errors.Wrap(err, "could not get results from cursor")
+	}
+
+	return &feed.SearchResult{
+		Feeds: results,
+		Result: feed.SearchResultResult{
+			Offset: intOffset,
+			Limit:  intLimit,
+			Total:  total,
+		},
+	}, nil
+}
+
 func (fr *FeedRepository) FindAll(ctx context.Context, limit string, offset string) (*feed.SearchResult, error) {
 	intLimit, intOffset, err := fr.getLimitOffset(limit, offset)
 	if err != nil {

@@ -20,6 +20,7 @@ type WorkerService struct {
 
 type ScrollRepoCallback func(ctx context.Context, limit string, offset string) (*feed.SearchResult, error)
 
+// this recursive function is necessary when one implement a reindex by source, for example.
 // FindAllFeeds calls feedScrollPub passing a repo function that returns all feeds
 func (ws *WorkerService) FindAllFeeds(ctx context.Context) error {
 	return ws.feedScrollPub(ctx, func(ctx context.Context, limit string, offset string) (*feed.SearchResult, error) {
@@ -27,20 +28,10 @@ func (ws *WorkerService) FindAllFeeds(ctx context.Context) error {
 	})
 }
 
-// FindFeedBySource calls feedScrollPub passing a repo function that returns a feeds with a specific source
-func (ws *WorkerService) FindFeedBySource(ctx context.Context, source string) error {
+// FindFeedByCategory calls feedScrollPub passing a repo function that returns a feeds with a specific source
+func (ws *WorkerService) FindFeedByCategory(ctx context.Context, category string) error {
 	return ws.feedScrollPub(ctx, func(ctx context.Context, limit string, offset string) (*feed.SearchResult, error) {
-		f, err := ws.repo.FindBySource(ctx, source)
-		if err != nil {
-			return nil, errors.Wrapf(err, "could not find a document with source %s", source)
-		}
-
-		var fe feed.Feed = *f
-
-		return &feed.SearchResult{
-			Feeds:  append([]feed.Feed{}, fe),
-			Result: feed.SearchResultResult{},
-		}, nil
+		return ws.repo.FindByCategory(ctx, limit, offset, category)
 	})
 }
 

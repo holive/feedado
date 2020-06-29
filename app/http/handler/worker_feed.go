@@ -3,12 +3,11 @@ package handler
 import (
 	"context"
 	"net/http"
-	url2 "net/url"
 
 	"github.com/go-chi/chi"
 )
 
-func (wh *WorkerHandler) ScrollFeeds(w http.ResponseWriter, r *http.Request) {
+func (wh *WorkerHandler) ReindexFeeds(w http.ResponseWriter, r *http.Request) {
 	err := wh.Services.RSS.FindAllFeeds(context.Background())
 	if err != nil {
 		respondWithJSONError(w, http.StatusInternalServerError, err)
@@ -19,16 +18,10 @@ func (wh *WorkerHandler) ScrollFeeds(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func (wh *WorkerHandler) FindFeed(w http.ResponseWriter, r *http.Request) {
-	source := chi.URLParam(r, "source")
+func (wh *WorkerHandler) ReindexFeedsByCategory(w http.ResponseWriter, r *http.Request) {
+	category := chi.URLParam(r, "category")
 
-	url, err := url2.QueryUnescape(source)
-	if err != nil {
-		respondWithJSONError(w, http.StatusInternalServerError, err)
-		return
-	}
-
-	err = wh.Services.RSS.FindFeedBySource(context.Background(), url)
+	err := wh.Services.RSS.FindFeedByCategory(context.Background(), category)
 	if err != nil {
 		respondWithJSONError(w, http.StatusInternalServerError, err)
 		return

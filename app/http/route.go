@@ -63,8 +63,8 @@ func NewWorkerRouter(cfg *RouterConfig, handler *handler.WorkerHandler) http.Han
 	r.Get("/health", handler.Health)
 
 	r.Route("/feedado-worker", func(r chi.Router) {
-		r.Post("/feed", handler.ScrollFeeds)
-		r.Post("/feed/{source}", handler.FindFeed)
+		r.Post("/feed", handler.ReindexFeeds)
+		r.Post("/feed/category/{category}", handler.ReindexFeedsByCategory)
 	})
 
 	return r
