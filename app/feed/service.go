@@ -48,6 +48,25 @@ func (s *Service) FindAll(ctx context.Context, limit string, offset string) (*Se
 	return s.repo.FindAll(ctx, limit, offset)
 }
 
+func (s *Service) FindAllCategories(ctx context.Context) ([]string, error) {
+	res, err := s.repo.FindAllCategories(ctx, "1000", "0")
+	if err != nil {
+		return nil, errors.Wrap(err, "could not get all categories")
+	}
+
+	m := make(map[string]interface{})
+	for _, doc := range res.Feeds {
+		m[doc.Category] = nil
+	}
+
+	var cats []string
+	for key, _ := range m {
+		cats = append(cats, key)
+	}
+
+	return cats, nil
+}
+
 func (s *Service) validateURL(source string) error {
 	u, err := url.Parse(source)
 	if (err == nil && u.Scheme != "" && u.Host != "") == false {

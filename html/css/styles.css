@@ -3,13 +3,51 @@ html {
 }
 body {
     min-height: 100%;
-    background-color: #1a1a1a;
+    background-color: #242424;
+}
+
+.categories {
+    margin-top: 30px;
+    padding-right: -6px;
+    padding-left: -6px;
+    margin-bottom: -3px;
+}
+
+.categories a {
+    margin-bottom: 6px;
+    margin-right: 6px;
 }
 
 .card {
     background-color: #393939 !important;
 }
 
-.card span.card-title {
+.card .card-title {
     font-size: 19px;
+}
+
+.card .card-action {
+    padding: 9px 24px;
+}
+
+.card .card-action span {
+    cursor: default;
+}
+
+.card .card-content {
+    padding: 14px 24px;
+}
+
+.card .delete {
+    float: right;
+    font-size: 18px;
+    cursor: pointer;
+    color: #9b9b9b;
+}
+
+.settings {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    z-index: 10;
 }

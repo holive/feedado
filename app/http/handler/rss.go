@@ -36,3 +36,17 @@ func (h *Handler) DeleteRSS(w http.ResponseWriter, r *http.Request) {
 
 	respondWithJSON(w, http.StatusOK, map[string]interface{}{})
 }
+
+func (h *Handler) GetAllRSSByCategory(w http.ResponseWriter, r *http.Request) {
+	limit := r.URL.Query().Get("limit")
+	offset := r.URL.Query().Get("offset")
+	category := chi.URLParam(r, "category")
+
+	results, err := h.Services.RSS.FindAllByCategory(r.Context(), limit, offset, category)
+	if err != nil {
+		respondWithJSONError(w, http.StatusNotFound, err)
+		return
+	}
+
+	respondWithJSON(w, http.StatusOK, results)
+}

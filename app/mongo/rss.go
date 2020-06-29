@@ -56,6 +56,41 @@ func (rr *RSSRepository) Delete(ctx context.Context, url string) error {
 	return err
 }
 
+func (rr *RSSRepository) FindAllByCategory(ctx context.Context, limit string, offset string, category string) (*rss.SearchResult, error) {
+	intLimit, intOffset, err := rr.getLimitOffset(limit, offset)
+	if err != nil {
+		return &rss.SearchResult{}, errors.Wrap(err, "could not get limit or offset")
+	}
+
+	findOptions := options.Find().SetLimit(intLimit).SetSkip(intOffset).SetSort(bson.D{{"timestamp", -1}})
+
+	filter := bson.M{"category": bson.M{"$eq": category}}
+
+	cur, err := rr.collection.Find(ctx, filter, findOptions)
+	if err != nil {
+		return &rss.SearchResult{}, err
+	}
+
+	total, err := rr.collection.CountDocuments(ctx, bson.D{{}})
+	if err != nil {
+		return nil, errors.Wrap(err, "could not count documents")
+	}
+
+	results, err := rr.resultFromCursor(ctx, cur)
+	if err != nil {
+		return &rss.SearchResult{}, errors.Wrap(err, "could not get results from cursor")
+	}
+
+	return &rss.SearchResult{
+		Feeds: results,
+		Result: rss.SearchResultResult{
+			Offset: intOffset,
+			Limit:  intLimit,
+			Total:  total,
+		},
+	}, nil
+}
+
 func (rr *RSSRepository) getLimitOffset(limit string, offset string) (int64, int64, error) {
 	if offset == "" {
 		offset = "0"

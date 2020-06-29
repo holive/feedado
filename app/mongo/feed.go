@@ -96,15 +96,35 @@ func (fr *FeedRepository) FindAll(ctx context.Context, limit string, offset stri
 
 	return &feed.SearchResult{
 		Feeds: results,
-		Result: struct {
-			Offset int64 `json:"offset"`
-			Limit  int64 `json:"limit"`
-			Total  int64 `json:"total"`
-		}{
+		Result: feed.SearchResultResult{
 			Offset: intOffset,
 			Limit:  intLimit,
 			Total:  total,
 		},
+	}, nil
+}
+
+func (fr *FeedRepository) FindAllCategories(ctx context.Context, limit string, offset string) (*feed.SearchResult, error) {
+	intLimit, intOffset, err := fr.getLimitOffset(limit, offset)
+	if err != nil {
+		return &feed.SearchResult{}, errors.Wrap(err, "could not get limit or offset")
+	}
+
+	findOptions := options.Find().SetLimit(intLimit).SetSkip(intOffset).SetProjection(bson.M{"category": 1})
+
+	cur, err := fr.collection.Find(ctx, bson.D{{}}, findOptions)
+	if err != nil {
+		return &feed.SearchResult{}, err
+	}
+
+	results, err := fr.resultFromCursor(ctx, cur)
+	if err != nil {
+		return &feed.SearchResult{}, errors.Wrap(err, "could not get results from cursor")
+	}
+
+	return &feed.SearchResult{
+		Feeds:  results,
+		Result: feed.SearchResultResult{},
 	}, nil
 }
 

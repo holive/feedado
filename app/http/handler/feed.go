@@ -105,3 +105,13 @@ func (h *Handler) GetAllFeeds(w http.ResponseWriter, r *http.Request) {
 
 	respondWithJSON(w, http.StatusOK, results)
 }
+
+func (h *Handler) GetAllCategories(w http.ResponseWriter, r *http.Request) {
+	results, err := h.Services.Feed.FindAllCategories(r.Context())
+	if err != nil {
+		respondWithJSONError(w, http.StatusNotFound, err)
+		return
+	}
+
+	respondWithJSON(w, http.StatusOK, results)
+}

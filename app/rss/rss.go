@@ -7,6 +7,7 @@ type RSS struct {
 	Title     string    `json:"title" bson:"title"`
 	Subtitle  string    `json:"subtitle" bson:"subtitle"`
 	URL       string    `json:"url" bson:"url"`
+	Category  string    `json:"category" bson:"category"`
 	Timestamp time.Time `json:"timestamp" bson:"timestamp"`
 }
 

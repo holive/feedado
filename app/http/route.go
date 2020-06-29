@@ -7,6 +7,7 @@ import (
 	"github.com/go-chi/chi"
 	chiMiddleware "github.com/go-chi/chi/middleware"
 	"github.com/holive/feedado/app/http/handler"
+	"github.com/rs/cors"
 )
 
 type RouterConfig struct {
@@ -20,12 +21,14 @@ func NewRouter(cfg *RouterConfig, handler *handler.Handler) http.Handler {
 	r.Use(chiMiddleware.RealIP)
 	r.Use(chiMiddleware.Recoverer)
 	r.Use(chiMiddleware.Timeout(cfg.MiddlewareTimeout))
+	r.Use(cors.AllowAll().Handler)
 
 	r.Get("/health", handler.Health)
 
 	r.Route("/feed", func(r chi.Router) {
 		r.Post("/", handler.CreateFeed)
 		r.Get("/", handler.GetAllFeeds)
+		r.Get("/categories", handler.GetAllCategories)
 		r.Get("/{source}", handler.GetFeed)
 		r.Put("/", handler.UpdateFeed)
 		r.Delete("/{source}", handler.DeleteFeed)
@@ -41,6 +44,7 @@ func NewRouter(cfg *RouterConfig, handler *handler.Handler) http.Handler {
 
 	r.Route("/rss", func(r chi.Router) {
 		r.Get("/", handler.GetAllRSS)
+		r.Get("/category/{category}", handler.GetAllRSSByCategory)
 		r.Delete("/{url}", handler.DeleteRSS)
 	})
 
@@ -54,6 +58,7 @@ func NewWorkerRouter(cfg *RouterConfig, handler *handler.WorkerHandler) http.Han
 	r.Use(chiMiddleware.RealIP)
 	r.Use(chiMiddleware.Recoverer)
 	r.Use(chiMiddleware.Timeout(cfg.MiddlewareTimeout))
+	r.Use(cors.Default().Handler)
 
 	r.Get("/health", handler.Health)
 
