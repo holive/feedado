@@ -11,12 +11,12 @@ cd $GOPATH/src/github.com/holive/feedado
 make run
 ```
  
-You can preview your feeds by opening `$GOPATH/src/github.com/holive/feedado/html/home.html` or create your own interface.
+You can preview your feeds by opening `$GOPATH/src/github.com/holive/feedado/html/home.html` in your browser or create your own interface.
 
 ![](html/preview.png)
 
 ## How it works
-In the program we have the Feed and the RSS. The Feed is the scheme from which the information used to generate the RSS is taken.
+In the Feedado we have the Feed and the RSS. The Feed is the scheme from which the information used to generate the RSS is taken.
 
 ## Feed
 
@@ -80,10 +80,10 @@ Endpoint: `GET http://localhost:8080/feed?limit=24&offset=0`
 ### get all categories
 Endpoint: `GET http://localhost:8080/feed/categories`
 
-##RSS
+## RSS
 
 ### get all
-Endpoint: `GET http://localhost:8080/rss?limit=24&offset=0
+Endpoint: `GET http://localhost:8080/rss?limit=24&offset=0`
 
 ### get all by category
 Endpoint: `GET http://localhost:8080/rss?limit=24&offset=0`
@@ -91,10 +91,13 @@ Endpoint: `GET http://localhost:8080/rss?limit=24&offset=0`
 ### delete
 Endpoint: `DELETE http://localhost:8080/rss/{source}`
 
-##Feed Worker
+## Feed Worker
 
 ### reindex RSS feeds
 Endpoint: `POST http://localhost:8081/feedado-worker/feed`
 
 ### reindex RSS feeds by category
 Endpoint: `POST http://localhost:8081/feedado-worker/feed/category/{category}`
+
+## TODO list
+* Implement a user layer
