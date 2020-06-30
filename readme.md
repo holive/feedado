@@ -31,7 +31,9 @@ Endpoint: `POST http://localhost:8080/feed`
 		{
 			"section_selector": ".row.management section",
 			"title_selector": ".text-wrapper h3",
+			"title_must_contain": "corona",
 			"subtitle_selector": ".text-wrapper p",
+			"subtitle_must_contain": "",
 			"url_selector": "a"
 		},
 		{
@@ -57,12 +59,6 @@ Endpoint: `PUT http://localhost:8080/feed`
 			"title_selector": ".text-wrapper h3",
 			"subtitle_selector": ".text-wrapper p",
 			"url_selector": "a"
-		},
-		{
-			"section_selector": "#ultimas .lista section",
-			"title_selector": ".third",
-			"subtitle_selector": "p",
-			"url_selector": ".link-title"
 		}
 	]
 }

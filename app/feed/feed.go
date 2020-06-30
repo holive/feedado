@@ -13,10 +13,12 @@ type Feed struct {
 }
 
 type Section struct {
-	SectionSelector  string `json:"section_selector" bson:"section_selector"`
-	TitleSelector    string `json:"title_selector,omitempty" bson:"title_selector"`
-	SubtitleSelector string `json:"subtitle_selector,omitempty" bson:"subtitle_selector"`
-	UrlSelector      string `json:"url_selector,omitempty" bson:"url_selector"`
+	SectionSelector     string `json:"section_selector" bson:"section_selector"`
+	TitleSelector       string `json:"title_selector,omitempty" bson:"title_selector"`
+	TitleMustContain    string `json:"title_must_contain,omitempty" bson:"title_must_contain"`
+	SubtitleSelector    string `json:"subtitle_selector,omitempty" bson:"subtitle_selector"`
+	SubtitleMustContain string `json:"subtitle_must_contain,omitempty" bson:"subtitle_must_contain"`
+	UrlSelector         string `json:"url_selector,omitempty" bson:"url_selector"`
 }
 
 type SearchResult struct {

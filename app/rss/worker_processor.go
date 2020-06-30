@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/PuerkitoBio/goquery"
@@ -96,7 +97,7 @@ func (p *Processor) sourceResponseToRSS(htmlPage []byte, schema *feed.Feed) ([]*
 				Timestamp: time.Now(),
 			}
 
-			if rss.Title == "" || rss.Source == "" {
+			if p.validateRSS(rss, section) == false {
 				return
 			}
 
@@ -111,6 +112,22 @@ func (p *Processor) sourceResponseToRSS(htmlPage []byte, schema *feed.Feed) ([]*
 	}
 
 	return result, nil
+}
+
+func (p *Processor) validateRSS(rss RSS, section feed.Section) bool {
+	if rss.Title == "" || rss.Source == "" {
+		return false
+	}
+
+	if section.TitleMustContain != "" && strings.Contains(rss.Title, section.TitleMustContain) == false {
+		return false
+	}
+
+	if section.SubtitleMustContain != "" && strings.Contains(rss.Subtitle, section.SubtitleMustContain) == false {
+		return false
+	}
+
+	return true
 }
 
 func NewProcessor(updater Updater,
